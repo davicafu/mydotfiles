@@ -89,6 +89,19 @@ local function oil_path()
   return vim.fn.fnamemodify(dir, ":~")
 end
 
+local recording = {
+  function()
+    local reg = vim.fn.reg_recording()
+
+    if reg == "" then
+      return ""
+    end
+
+    return "󰑋 REC @" .. reg
+  end,
+  color = { fg = "#ff9e64", gui = "bold" },
+}
+
 return {
   {
     "nvim-lualine/lualine.nvim",
@@ -124,6 +137,7 @@ return {
         },
 
         lualine_x = {
+          recording,
           diagnostics,
           diff,
           lsp,

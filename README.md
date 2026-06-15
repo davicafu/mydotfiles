@@ -207,8 +207,8 @@ Configuración actual:
 - Comentarios TODO: `todo-comments`.
 - Markdown: configuración/plugin específico en `markdown.lua`.
 - Syntax/parsing: `treesitter`.
-- AI plugins: `copilot`.
-- Disabled plugins: `avante`, `copilot-chat`.
+- AI plugins: `copilot`, `copilot-chat`.
+- Disabled plugins: `avante`.
 
 ### LazyVim
 
