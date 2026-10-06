@@ -259,7 +259,13 @@ ln -s ~/mydotfiles/nvim ~/.config/nvim
 Configuración actual:
 
 - herramientas extra que no forman parte del setup base
-- `toilet` para banners, `asciicinema` para grabar terminal, `pandoc` para conversion de docs y `chafa` para ver imagenes en terminal
+ - `mole` para limpieza y monitoring
+ - `hazelnut` organizador de ficheros
+ - `croc` para envío ficheros
+ - `toilet` para banners
+ - `asciicinema` para grabar terminal
+ - `pandoc` para conversion de docs
+ - `chafa` para ver imagenes en terminal
 
 ```bash
 brew toilet # banner generator
