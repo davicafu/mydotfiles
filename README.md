@@ -213,6 +213,7 @@ Configuración actual:
 ### LazyVim
 
 ```bash
+brew install neovim
 git clone https://github.com/LazyVim/starter ~/.config/nvim
 rm -rf ~/.config/nvim/.git
 ##### first run
@@ -227,9 +228,9 @@ brew install prettier
 brew install shfmt
 ```
 
-### Only WSL: clipboard hack
+#### Only WSL: clipboard hack
 
-No necesario si ya se instal´o para tmux
+No necesario si ya se instaló para tmux
 
 ```bash
 mkdir -p ~/.local/bin
@@ -243,7 +244,6 @@ chmod +x ~/.local/bin/win32yank.exe
 
 ```bash
 ln -s ~/mydotfiles/nvim ~/.config/nvim
-
 ```
 
 #### review this file for clipboard configuration
@@ -268,8 +268,10 @@ Configuración actual:
  - `chafa` para ver imagenes en terminal
 
 ```bash
-brew toilet # banner generator
-brew asciicinema # record terminal
-brew pandoc # conversor docs
-brew chafa # terminal image viewer
+brew install mole
+brew install ricardodantas/tap/hazelnut
+brew install toilet
+brew install asciicinema
+brew install pandoc
+brew install chafa
 ```
