@@ -1,0 +1,1 @@
+brew "powerlevel10k"

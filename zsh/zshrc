@@ -1,0 +1,16 @@
+# Config de zsh de mydotfiles. ~/.zshrc la carga con `source` en su primera
+# línea; lo que haya debajo en ~/.zshrc es de esa máquina (mise, factorial-dev...)
+# y se ejecuta después.
+#
+# Los módulos de conf.d/ se cargan por orden de nombre:
+#   00 instant prompt de p10k (tiene que ir primero)
+#   10 brew · 20 completado · 30 prompt · 40 herramientas
+#   50 aliases · 60 funciones · 70 plataforma
+#   90 autosuggestions + syntax-highlighting (diferidos al primer prompt)
+
+ZSH_DOTFILES="${${(%):-%x}:A:h}"
+
+for _f in "$ZSH_DOTFILES"/conf.d/*.zsh(N); do
+  source "$_f"
+done
+unset _f

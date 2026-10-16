@@ -9,7 +9,7 @@
 # └──────────────────────────────────────────────────────────────────────────────┘
 
 font-family = Inconsolata Nerd Font
-font-size = 12
+font-size = 14
 
 
 # ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -40,8 +40,19 @@ custom-shader = shaders/cursor_smear_gentleman.glsl
 # │                            INPUT / KEYBINDINGS                               │
 # └──────────────────────────────────────────────────────────────────────────────┘
 
-# macOS Alt key fix
-macos-option-as-alt = left
+# Option escribe caracteres como en el resto del Mac (teclado español:
+# ~ con Option+ñ, | @ # \ [ ] { } €...). Por eso no se usa como Alt.
+macos-option-as-alt = false
+
+# Excepción: Option + f/h/j/k/l se envían como Meta para los atajos de tmux
+# (M-f ventana flotante, M-h/j/k/l moverse entre paneles)
+keybind = alt+f=esc:f
+keybind = alt+h=esc:h
+keybind = alt+j=esc:j
+keybind = alt+k=esc:k
+keybind = alt+l=esc:l
+
+# Option + flechas pasan tal cual a tmux (paneles y ventanas)
 keybind = alt+left=unbind
 keybind = alt+right=unbind
 
@@ -49,11 +60,8 @@ keybind = alt+right=unbind
 keybind = alt+v=new_split:right
 keybind = alt+d=new_split:down
 
-# Split Navigation
-keybind = alt+k=goto_split:up
-keybind = alt+j=goto_split:down
-keybind = alt+h=goto_split:left
-keybind = alt+l=goto_split:right
+# Split Navigation: Cmd+Option+flechas (por defecto de Ghostty). Option+h/j/k/l
+# está reservado para tmux.
 
 # Split Resize
 keybind = ctrl+shift+j=resize_split:up,10
@@ -74,6 +82,7 @@ keybind = alt+s=write_screen_file:paste
 # └──────────────────────────────────────────────────────────────────────────────┘
 
 # --- Base Colors ---
+# Fondo casi negro: el gris (palette 8) queda a 6.2:1 de contraste
 background = 06080f
 foreground = f3f6f9
 cursor-color = e0c15a

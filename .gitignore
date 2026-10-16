@@ -1,0 +1,12 @@
+# Restos que dejaba el layout antiguo (zsh/ enlazado como ZDOTDIR). install.sh
+# los mueve fuera al migrar; se ignoran por si aparecen en otra máquina.
+zsh/.zsh_history
+zsh/.zsh_sessions/
+zsh/.zcompdump*
+zsh/.zshenv
+zsh/.zprofile
+zsh/.zshrc.pre-oh-my-zsh
+zsh/ohmyzsh/
+
+# Backups que crea install.sh al reemplazar configs existentes
+*.backup-*

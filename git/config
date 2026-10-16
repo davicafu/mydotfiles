@@ -1,0 +1,52 @@
+# Config global de git. install.sh la incluye desde ~/.gitconfig con
+# [include] path = ..., así user.name/user.email siguen en ~/.gitconfig.
+[core]
+        ignorecase = true
+        editor = vim
+        pager = less -FXRS
+        filemode = false   # Ignora cambios en los permisos
+        autocrlf = false   # No convierte crlf a lf
+[color]
+        ui = auto
+        branch = auto
+        diff = auto
+        status = auto
+[color "branch"]
+        current = yellow reverse
+        local = yellow
+        remote = green
+[color "diff"]
+        meta = yellow bold
+        frag = magenta bold
+        old = red bold
+        new = green bold
+[color "status"]
+        added = yellow
+        changed = green
+        untracked = cyan
+[alias]
+        st = status
+        ci = commit
+        br = branch
+        co = checkout
+        df = diff
+        lol = log --graph --decorate --pretty=oneline --abbrev-commit
+        lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+        branch-name = !git for-each-ref --format='%(refname:short)' `git symbolic-ref HEAD`
+        export-branch = !git format-patch --stdout $1 > ~/`git branch-name`.diff
+        pull-svn = pull --rebase
+        push-svn = svn dcommit
+        upt = fetch --all
+        af = diff HEAD^ --name-only
+[apply]
+        whitespace = nowarn
+[i18n]
+        filesEncoding = utf-8
+[filter "lfs"]
+        required = true
+        clean = git-lfs clean %f
+        smudge = git-lfs smudge %f
+[credential]
+    helper = store
+[http]
+    postBuffer = 524288000
