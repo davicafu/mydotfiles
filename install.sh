@@ -35,6 +35,8 @@ Opciones:
   -a, --all       Instala todos los módulos por defecto sin TUI
   -o, --os SO     SO destino: mac | linux | wsl (por defecto, el detectado)
       --nvim V    Variante de nvim: repo (por defecto) | limpia (LazyVim starter)
+      --opencode V
+                  Variante de opencode: repo (por defecto) | limpia (sin config)
       --tools L   Herramientas CLI separadas por comas (p. ej. eza,bat,fzf)
   -s, --status    Muestra el estado de cada módulo y sale
   -n, --dry-run   Muestra lo que haría sin cambiar nada
@@ -220,6 +222,16 @@ choose_nvim_variant() {
     awk '{print $1}'
 }
 
+# Variante de opencode, igual que la de nvim.
+choose_opencode_variant() {
+  local repo limpia
+  repo="$(printf '%-12s %s' repo "Config del repo (agentes · skills · comandos)")"
+  limpia="$(printf '%-12s %s' limpia "Sin config: valores por defecto de opencode")"
+  printf '%s\n' "$repo" "$limpia" |
+    gum choose --header "opencode (actual: $(opencode_current_variant))" --selected="$repo" |
+    awk '{print $1}'
+}
+
 # Módulos por defecto del SO destino (lo que preselecciona la TUI).
 default_modules() {
   local m
@@ -261,9 +273,14 @@ run_tui() {
     NVIM_VARIANT="$(choose_nvim_variant)"
     [[ -z "$NVIM_VARIANT" ]] && exit 0
   fi
+  if [[ " $picked " == *" opencode "* && -z "${OPENCODE_VARIANT:-}" ]]; then
+    OPENCODE_VARIANT="$(choose_opencode_variant)"
+    [[ -z "$OPENCODE_VARIANT" ]] && exit 0
+  fi
 
   gum style --border rounded --padding "0 2" --border-foreground 8 \
     "SO: $TARGET_OS" "Módulos: $picked" ${NVIM_VARIANT:+"Neovim: $NVIM_VARIANT"} \
+    ${OPENCODE_VARIANT:+"opencode: $OPENCODE_VARIANT"} \
     ${TOOLS_SET:+"Herramientas: ${TOOLS_SELECTED:-ninguna}"}
   confirm "¿Instalar?" || exit 0
   install_modules $picked
@@ -274,7 +291,7 @@ run_tui() {
 install_modules() {
   local m rc failed="" done_list=""
   log_init "$ORIGINAL_ARGS"
-  log_file "MODULES $* ${NVIM_VARIANT:+(nvim: $NVIM_VARIANT)}"
+  log_file "MODULES $* ${NVIM_VARIANT:+(nvim: $NVIM_VARIANT)} ${OPENCODE_VARIANT:+(opencode: $OPENCODE_VARIANT)}"
   for m in "$@"; do
     gum style --bold --foreground 212 --margin "1 0 0 0" "▸ $m"
     log_file "----- $m"
@@ -323,6 +340,16 @@ main() {
           repo | limpia) NVIM_VARIANT="$1" ;;
           *)
             log_err "Variante de nvim no válida: ${1:-} (repo | limpia)"
+            exit 1
+            ;;
+        esac
+        ;;
+      --opencode)
+        shift
+        case "${1:-}" in
+          repo | limpia) OPENCODE_VARIANT="$1" ;;
+          *)
+            log_err "Variante de opencode no válida: ${1:-} (repo | limpia)"
             exit 1
             ;;
         esac

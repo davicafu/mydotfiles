@@ -20,6 +20,7 @@ cd ~/mydotfiles
 6. **Paquetes** (selección múltiple): font, git y nvim vienen marcados; go y opencode no
 7. **Herramientas CLI** (selección múltiple, con una descripción de cada una): las de siempre vienen marcadas y las opcionales no (ver tabla abajo)
 8. **Neovim** (si está marcado): `repo` (por defecto) o `limpia`
+9. **opencode** (si está marcado): `repo` (por defecto) o `limpia`
 
 En las listas de selección múltiple se marca con **espacio** o **x**, `a` marca o desmarca todo, enter confirma y esc sale.
 
@@ -39,6 +40,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 ./install.sh --os linux --all # forzar el SO destino
 ./install.sh zsh nvim         # solo esos módulos
 ./install.sh --nvim limpia nvim # LazyVim starter en vez de la config del repo
+./install.sh --opencode limpia opencode # opencode sin la config del repo
 ./install.sh --tools eza,bat,croc tools  # herramientas CLI concretas
 ./install.sh -y ...           # sin confirmaciones
 ```
@@ -56,7 +58,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `go` | todas | no | Go toolchain |
 | `ghostty` | mac | sí | Ghostty, `~/.config/ghostty` |
 | `wezterm` | todas | linux, wsl | mac: cask + `~/.wezterm.lua`; linux: `~/.wezterm.lua`; wsl: copia al home de Windows y winget |
-| `opencode` | todas | no | opencode, `~/.config/opencode` |
+| `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo` o `limpia`) |
 
 **Herramientas CLI** (`install/modules/tools.sh`):
 
@@ -90,7 +92,7 @@ En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unz
   - **Migración del layout antiguo** (`ZDOTDIR` → `~/.config/zsh`): el instalador quita la línea de `ZDOTDIR` de `~/.zshenv`, convierte en ficheros normales los `~/.zshenv`/`~/.zprofile` que eran enlaces, añade el historial que vivía en el repo a `~/.zsh_history` y mueve los restos (oh-my-zsh, zcompdump…) a `~/.local/state/mydotfiles/zsh-legacy-<fecha>/`. Todo con backup.
   - Las terminales y el servidor de tmux que ya estuvieran abiertos conservan el `ZDOTDIR` antiguo hasta que los cierres.
 - **kdlfmt:** se instala en `~/.cargo/bin`, que debe estar en el `PATH` para que conform lo encuentre.
-- **git:** pide nombre y email precargados con los valores actuales (Enter los mantiene) y los guarda como `user.name`/`user.email` globales de ese ordenador, en `~/.gitconfig`. Con `--yes` no pregunta. `~/.gitconfig` incluye `git/config` con `[include]`. El include se añade al final, de modo que sus valores tienen prioridad, y el instalador avisa de qué claves cambian. `credential.helper = store` guarda las credenciales en texto plano en `~/.git-credentials`.
+- **git:** pide nombre y email sin valores de ejemplo: hay que escribirlos (Esc cancela). Si ya hay unos configurados salen precargados para mantenerlos o cambiarlos. Los guarda como `user.name`/`user.email` globales de ese ordenador, en `~/.gitconfig`. Con `--yes` no pregunta. `~/.gitconfig` incluye `git/config` con `[include]`. El include se añade al final, de modo que sus valores tienen prioridad, y el instalador avisa de qué claves cambian. `credential.helper = store` guarda las credenciales en texto plano en `~/.git-credentials`.
 - **wezterm:** `.wezterm.lua` fija `default_domain = "WSL:Ubuntu"`, un dominio que fuera de Windows no existe.
 - **zellij:** los plugins no funcionan con rutas relativas y los layouts tienen `/home/david` escrito a mano. El instalador ofrece reescribirlos a tu `$HOME` (opt-in, porque modifica ficheros del repo).
 - **nvim:** hay dos variantes y se puede cambiar de una a otra volviendo a ejecutar el instalador:
@@ -98,6 +100,7 @@ En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unz
   - `limpia`: el LazyVim starter, sin personalizar.
 
   Al cambiar de variante (o si había otra config) se mueven a `*.backup-<fecha>` tanto `~/.config/nvim` como los datos de nvim (`~/.local/share/nvim`, `~/.local/state/nvim`, `~/.cache/nvim`), para que la variante nueva arranque desde cero. La TUI siempre propone `repo`, así que quien haya probado la limpia vuelve a la del repo con solo reejecutar.
+- **opencode:** también tiene dos variantes, `repo` (por defecto, enlaza `opencode/`) y `limpia` (`~/.config/opencode` vacío: opencode usa sus valores por defecto). Al cambiar se mueve la config a `*.backup-<fecha>`; los datos de opencode (login, sesiones) no se tocan. opencode escribe `cli.json` y `service.json` en su config, que con la variante `repo` es el repo: están en `.gitignore`.
 
 ## Configuración actual
 

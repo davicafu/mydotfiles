@@ -21,12 +21,17 @@ git_status() {
     "$(status_of git_identity_ok)"
 }
 
-# Pide un valor con gum, precargado con el actual. Vacío = mantener el actual.
+# Pide un valor con gum. Sin valores de ejemplo: el usuario lo tiene que
+# escribir. Si ya hay uno configurado se precarga para poder mantenerlo.
+# Esc cancela (devuelve 1).
 git_ask() {
-  local key="$1" header="$2" placeholder="$3" current value
+  local key="$1" header="$2" current value
   current="$(git config --global --get "$key" 2>/dev/null)"
-  value="$(gum input --header "$header" --placeholder "$placeholder" --value "$current")"
-  [[ -z "$value" ]] && value="$current"
+  while :; do
+    value="$(gum input --header "$header" --placeholder "" --value "$current")" || return 1
+    [[ -n "$value" ]] && break
+    log_warn "Es obligatorio: escribe un valor (Esc para cancelar)" >&2
+  done
   echo "$value"
 }
 
@@ -44,10 +49,16 @@ git_set_identity() {
     return 0
   fi
 
-  name="$(git_ask user.name "Nombre para los commits (git user.name)" "Tu Nombre")"
+  name="$(git_ask user.name "Nombre para los commits (git user.name)")" || {
+    log_warn "Cancelado: identidad de git sin cambios"
+    return 0
+  }
   while :; do
-    email="$(git_ask user.email "Email para los commits (git user.email)" "tu@email.com")"
-    [[ -z "$email" || "$email" == *@*.* ]] && break
+    email="$(git_ask user.email "Email para los commits (git user.email)")" || {
+      log_warn "Cancelado: identidad de git sin cambios"
+      return 0
+    }
+    [[ "$email" == *@*.* ]] && break
     log_warn "Email no válido: $email"
   done
 

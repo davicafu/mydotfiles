@@ -39,6 +39,7 @@ Personal dotfiles for macOS (Ghostty) and Linux/WSL (WezTerm). There is no build
 - To test the TUI without a human, drive it in an isolated tmux server: `tmux -L tuitest -f /dev/null new-session -d "./install.sh --dry-run"`, then `send-keys` and `capture-pane -p`. `script` doesn't work, because gum waits for terminal query replies.
 - Every run that installs something writes a plain-text log to `~/.cache/mydotfiles/install-<ts>.log` (the last 20 are kept), via `log_*` and `run()`. Output isn't redirected wholesale, because gum needs the TTY.
 - nvim has two variants (`--nvim repo|limpia`, asked in the TUI with `repo` preselected). Switching variants backs up the config and nvim's data/state/cache dirs.
+- opencode has the same two variants (`--opencode repo|limpia`, asked in the TUI after nvim). `limpia` is an empty `~/.config/opencode` with a marker file. Switching backs up only the config, not opencode's data (login, sessions). opencode writes `cli.json`/`service.json` (secrets) into its config dir, which is the repo under the `repo` variant, so they're gitignored.
 - Avoid `grep -q` at the end of pipelines: with `pipefail`, the producer gets SIGPIPE and the pipeline fails even on a match. Use `grep ... >/dev/null` or `case`.
 - To test real installs, run against a throwaway `HOME`: `env -u XDG_CONFIG_HOME HOME=/tmp/x ./install.sh -y <module>`. The symlinks still point into this repo, so check `git status` afterwards. lazy.nvim rewrites `nvim/lazy-lock.json` on first install, and the nvim module saves and restores that file to protect it.
 
