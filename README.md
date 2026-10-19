@@ -30,7 +30,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 - Las configs se enlazan con symlinks. Si ya existe algo en esa ruta, se mueve a `<ruta>.backup-<fecha>` tras confirmar; nunca se borra nada.
 - `~/.zshrc` y `~/.gitconfig` no se sobrescriben: solo se añade lo que falta.
 - Cada ejecución deja un log en `~/.cache/mydotfiles/install-<fecha>.log` (se guardan los 20 últimos) con los comandos ejecutados, sus errores y el resultado de cada módulo.
-- Los plugins de tmux solo se clonan si no existen, y los de nvim se instalan en las versiones de `lazy-lock.json` sin modificarlo.
+- Los plugins de tmux solo se clonan si no existen (sí se inicializan sus submódulos si faltan), y los de nvim se instalan en las versiones de `lazy-lock.json` sin modificarlo.
 
 ```bash
 ./install.sh                  # TUI
