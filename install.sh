@@ -15,7 +15,7 @@ for f in "$DOTFILES"/install/modules/*.sh; do
 done
 
 # Orden de instalación
-MODULES="font git tools zsh p10k tmux zellij nvim go ghostty wezterm opencode"
+MODULES="font git tools zsh p10k tmux zellij nvim go ghostty wezterm opencode zed orca"
 
 # Pasos de la TUI (elección única). "a+b" es una opción que instala ambos.
 TERMINALS="ghostty wezterm"
@@ -23,7 +23,7 @@ SHELLS="zsh"
 PROMPTS="p10k"
 MULTIPLEXERS="tmux zellij tmux+zellij"
 # Paso final (elección múltiple)
-PACKAGES="font git nvim go opencode"
+PACKAGES="font git nvim go opencode zed orca"
 
 usage() {
   cat <<EOF
