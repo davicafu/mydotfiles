@@ -3,6 +3,6 @@
   "plugin": [
     "opencode-subagent-statusline",
     "opencode-sdd-engram-manage",
-    "file:///Users/david.barreiro/.config/opencode/plugins/orca-opencode-status-tui/tui.js"
+    "./plugins/orca-opencode-status-tui/tui.js"
   ]
 }
