@@ -58,7 +58,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `go` | todas | no | Go toolchain |
 | `ghostty` | mac | sí | Ghostty, `~/.config/ghostty` |
 | `wezterm` | todas | linux, wsl | mac: cask + `~/.wezterm.lua`; linux: `~/.wezterm.lua`; wsl: copia al home de Windows y winget |
-| `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo` o `limpia`) |
+| `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo` o `limpia`); con `repo` también engram (memoria de los agentes) |
 | `zed` | mac, linux | no | editor Zed (mac: cask; linux: script oficial en `~/.local`) |
 | `orca` | mac | no | Orca, orquestador de agentes de IA (cask `stablyai/orca/orca`) |
 
@@ -102,7 +102,7 @@ En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unz
   - `limpia`: el LazyVim starter, sin personalizar.
 
   Al cambiar de variante (o si había otra config) se mueven a `*.backup-<fecha>` tanto `~/.config/nvim` como los datos de nvim (`~/.local/share/nvim`, `~/.local/state/nvim`, `~/.cache/nvim`), para que la variante nueva arranque desde cero. La TUI siempre propone `repo`, así que quien haya probado la limpia vuelve a la del repo con solo reejecutar.
-- **opencode:** también tiene dos variantes, `repo` (por defecto, enlaza `opencode/`) y `limpia` (`~/.config/opencode` vacío: opencode usa sus valores por defecto). Al cambiar se mueve la config a `*.backup-<fecha>`; los datos de opencode (login, sesiones) no se tocan. opencode escribe `cli.json` y `service.json` en su config, que con la variante `repo` es el repo: están en `.gitignore`.
+- **opencode:** también tiene dos variantes, `repo` (por defecto, enlaza `opencode/`) y `limpia` (`~/.config/opencode` vacío: opencode usa sus valores por defecto). Al cambiar se mueve la config a `*.backup-<fecha>`; los datos de opencode (login, sesiones) no se tocan. opencode escribe `cli.json` y `service.json` en su config, que con la variante `repo` es el repo: están en `.gitignore`. La variante `repo` usa [engram](https://github.com/Gentleman-Programming/engram) (plugin `plugins/engram.ts` + MCP), que se instala desde el tap `gentleman-programming/tap`; `plugins/engram.ts` es el que genera `engram setup opencode`, y conviene regenerarlo al actualizar engram.
 
 ## Configuración actual
 

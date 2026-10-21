@@ -55,7 +55,12 @@ opencode_status() {
     ninguna) config=pending ;;
     *) config=conflict ;;
   esac
-  combine_status "$(status_of brew_satisfied opencode)" "$config"
+  # La config del repo usa engram (plugin + MCP)
+  if [[ "$(opencode_target_variant)" == repo ]]; then
+    combine_status "$(status_of brew_satisfied opencode)" "$(status_of brew_satisfied engram)" "$config"
+  else
+    combine_status "$(status_of brew_satisfied opencode)" "$config"
+  fi
 }
 
 opencode_install() {
@@ -74,6 +79,10 @@ opencode_install() {
   log_info "Variante: $target"
 
   brew_bundle opencode
+  # La config del repo usa engram (plugin + MCP); la limpia no lo necesita
+  if [[ "$target" == repo ]]; then
+    brew_bundle engram
+  fi
 
   if [[ "$current" != "$target" && "$current" != ninguna ]]; then
     if ! confirm "Hay una config de opencode ($current). ¿Hacer backup de ella y pasar a '$target'?"; then
