@@ -1,19 +1,27 @@
 # opencode: agentes, skills, comandos y prompts
 #
 # Dos variantes de ~/.config/opencode (OPENCODE_VARIANT o --opencode):
-#   repo    symlink a la config del repo (por defecto)
+#   repo    copia de la config del repo (por defecto). Es una carpeta de la
+#           máquina: lo que escriban opencode, Orca, engram o gentle-ai se
+#           queda ahí y no llega al repo. Los cambios se pasan al repo a mano.
 #   limpia  sin config: opencode arranca con sus valores por defecto
 # Se puede cambiar de una a otra volviendo a ejecutar el instalador. Los datos
-# de opencode (login, sesiones) no se tocan al cambiar.
+# de opencode (login, sesiones) no se tocan al cambiar. Si ~/.config/opencode
+# es un enlace al repo (layout antiguo), se pasa a una copia.
 
-# Marca que deja la variante limpia para reconocerla en siguientes ejecuciones
+# Marcas que dejan las variantes para reconocerlas en siguientes ejecuciones
+OPENCODE_REPO_MARKER=".mydotfiles-repo"
 OPENCODE_CLEAN_MARKER=".mydotfiles-limpia"
+# Lo que no se copia del repo: estado de la máquina que opencode escribía en
+# el repo con el layout antiguo, y restos
+OPENCODE_STATE="cli.json service.json"
+OPENCODE_EXCLUDES=(./cli.json ./service.json node_modules ".mydotfiles-*" "*.backup-*")
 
 opencode_desc() {
   local current
   current="$(opencode_current_variant)"
   case "$current" in
-    repo | limpia) echo "opencode con skills · comandos SDD y perfiles (actual: $current)" ;;
+    repo | limpia | enlace) echo "opencode con skills · comandos SDD y perfiles (actual: $current)" ;;
     *) echo "opencode con skills · comandos SDD y perfiles" ;;
   esac
 }
@@ -22,11 +30,13 @@ opencode_default() { return 1; }
 
 opencode_config() { echo "$CONFIG_DIR/opencode"; }
 
-# Variante instalada ahora: repo | limpia | otra | ninguna
+# Variante instalada ahora: repo | limpia | enlace | otra | ninguna
 opencode_current_variant() {
   local cfg
   cfg="$(opencode_config)"
   if [[ "$(link_status "$DOTFILES/opencode" "$cfg")" == ok ]]; then
+    echo enlace
+  elif [[ -f "$cfg/$OPENCODE_REPO_MARKER" ]]; then
     echo repo
   elif [[ -f "$cfg/$OPENCODE_CLEAN_MARKER" ]]; then
     echo limpia
@@ -52,7 +62,7 @@ opencode_status() {
   local config
   case "$(opencode_current_variant)" in
     "$(opencode_target_variant)") config=ok ;;
-    ninguna) config=pending ;;
+    ninguna | enlace) config=pending ;;
     *) config=conflict ;;
   esac
   # La config del repo usa engram (plugin + MCP)
@@ -63,8 +73,32 @@ opencode_status() {
   fi
 }
 
+# Copia opencode/ del repo a cfg, sin el estado de la máquina ni restos.
+opencode_copy_repo() {
+  local cfg="$1" x
+  local excludes=()
+  for x in "${OPENCODE_EXCLUDES[@]}"; do excludes+=("--exclude=$x"); done
+  run mkdir -p "$cfg"
+  run sh -c 'src=$1 dst=$2; shift 2; tar -C "$src" -cf - "$@" . | tar -C "$dst" -xpf -' \
+    sh "$DOTFILES/opencode" "$cfg" "${excludes[@]}"
+  run touch "$cfg/$OPENCODE_REPO_MARKER"
+  log_ok "Config del repo copiada a $cfg"
+  log_info "Los cambios en $cfg no van al repo: para guardarlos, cópialos a mano a $DOTFILES/opencode"
+}
+
+# Con el layout antiguo opencode guardaba su estado (cli.json, service.json)
+# dentro del repo: se lleva a la nueva carpeta.
+opencode_move_state() {
+  local cfg="$1" f
+  for f in $OPENCODE_STATE; do
+    [[ -f "$DOTFILES/opencode/$f" ]] || continue
+    run mv "$DOTFILES/opencode/$f" "$cfg/$f"
+    log_ok "$f movido del repo a $cfg"
+  done
+}
+
 opencode_install() {
-  local target current cfg
+  local target current cfg migrate=0
   # Al instalar, sin --opencode se usa siempre la del repo
   target="${OPENCODE_VARIANT:-repo}"
   current="$(opencode_current_variant)"
@@ -84,7 +118,13 @@ opencode_install() {
     brew_bundle engram
   fi
 
-  if [[ "$current" != "$target" && "$current" != ninguna ]]; then
+  if [[ "$current" == enlace ]]; then
+    # Quitar el enlace no pierde nada: la config sigue en el repo
+    log_warn "$cfg es un enlace al repo (layout antiguo): se pasa a una copia"
+    backup "$cfg"
+    current=ninguna
+    if [[ "$target" == repo ]]; then migrate=1; fi
+  elif [[ "$current" != "$target" && "$current" != ninguna ]]; then
     if ! confirm "Hay una config de opencode ($current). ¿Hacer backup de ella y pasar a '$target'?"; then
       log_warn "Sin cambios en la config de opencode"
       return 0
@@ -94,11 +134,12 @@ opencode_install() {
   fi
 
   if [[ "$target" == repo ]]; then
-    if [[ "$DRY_RUN" == 1 && "$current" == ninguna && -e "$cfg" ]]; then
-      # En dry-run el backup no se hizo de verdad: link volvería a verlo
-      run ln -s "$DOTFILES/opencode" "$cfg"
+    if [[ "$current" == repo ]]; then
+      log_skip "opencode ya usa una copia de la config del repo en $cfg"
+      log_info "No se actualiza desde el repo: para volver a copiarla, mueve $cfg y ejecuta otra vez"
     else
-      link "$DOTFILES/opencode" "$cfg"
+      opencode_copy_repo "$cfg"
+      if [[ "$migrate" == 1 ]]; then opencode_move_state "$cfg"; fi
     fi
   elif [[ "$current" == limpia ]]; then
     log_skip "opencode ya usa la config limpia en $cfg"

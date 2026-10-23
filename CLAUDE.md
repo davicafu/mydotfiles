@@ -17,7 +17,7 @@ Personal dotfiles for macOS (Ghostty) and Linux/WSL (WezTerm). There is no build
 | `ghostty/` | `~/.config/ghostty` | macOS terminal + GLSL shaders |
 | `.wezterm.lua` | `~/.wezterm.lua` (on WSL, copied to the Windows user dir) | |
 | `git/config` | included from `~/.gitconfig` (`include.path`) | global git config; identity stays in `~/.gitconfig` |
-| `opencode/` | opencode agent config | `AGENTS.md`/skills/prompts here are for opencode, **not** instructions for working in this repo |
+| `opencode/` | copied to `~/.config/opencode` | opencode agent config; `AGENTS.md`/skills/prompts here are for opencode, **not** instructions for working in this repo |
 
 **zsh layout.** `~/.zshrc` is a regular file that belongs to each machine. Its first line sources `zsh/zshrc` from the repo, and whatever other installers append (mise, factorial-dev…) goes below it, outside the repo. Don't move machine-specific things into the repo. `90-plugins.zsh` defers autosuggestions and syntax-highlighting to the first `precmd`, so they load after everything in `~/.zshrc`. The old layout, with `zsh/` symlinked as `ZDOTDIR`, made other installers write into the repo; `install/modules/zsh.sh` migrates it. Don't commit `*.backup-*` files.
 
@@ -39,7 +39,7 @@ Personal dotfiles for macOS (Ghostty) and Linux/WSL (WezTerm). There is no build
 - To test the TUI without a human, drive it in an isolated tmux server: `tmux -L tuitest -f /dev/null new-session -d "./install.sh --dry-run"`, then `send-keys` and `capture-pane -p`. `script` doesn't work, because gum waits for terminal query replies.
 - Every run that installs something writes a plain-text log to `~/.cache/mydotfiles/install-<ts>.log` (the last 20 are kept), via `log_*` and `run()`. Output isn't redirected wholesale, because gum needs the TTY.
 - nvim has two variants (`--nvim repo|limpia`, asked in the TUI with `repo` preselected). Switching variants backs up the config and nvim's data/state/cache dirs.
-- opencode has the same two variants (`--opencode repo|limpia`, asked in the TUI after nvim). `limpia` is an empty `~/.config/opencode` with a marker file. Switching backs up only the config, not opencode's data (login, sessions). opencode writes `cli.json`/`service.json` (secrets) into its config dir, which is the repo under the `repo` variant, so they're gitignored.
+- opencode has the same two variants (`--opencode repo|limpia`, asked in the TUI after nvim), but `repo` is a **copy** of `opencode/`, not a symlink (marker `.mydotfiles-repo`), so whatever opencode, Orca, engram or gentle-ai write into the config stays on the machine. It is copied once and not refreshed: the owner moves changes back into the repo by hand. An old symlink is migrated to a copy, moving `cli.json`/`service.json` (secrets, still gitignored) out of the repo. `limpia` is an empty `~/.config/opencode` with a marker file. Switching backs up only the config, not opencode's data (login, sessions).
 - Avoid `grep -q` at the end of pipelines: with `pipefail`, the producer gets SIGPIPE and the pipeline fails even on a match. Use `grep ... >/dev/null` or `case`.
 - To test real installs, run against a throwaway `HOME`: `env -u XDG_CONFIG_HOME HOME=/tmp/x ./install.sh -y <module>`. The symlinks still point into this repo, so check `git status` afterwards. lazy.nvim rewrites `nvim/lazy-lock.json` on first install, and the nvim module saves and restores that file to protect it.
 

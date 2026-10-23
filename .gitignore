@@ -11,6 +11,7 @@ zsh/ohmyzsh/
 # Backups que crea install.sh al reemplazar configs existentes
 *.backup-*
 
-# Ficheros que opencode escribe en su config (vía symlink, dentro del repo)
+# Ficheros que opencode escribía en el repo cuando su config era un symlink
+# (layout antiguo; install.sh los saca al migrar)
 opencode/cli.json
 opencode/service.json

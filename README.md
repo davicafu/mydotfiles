@@ -58,7 +58,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `go` | todas | no | Go toolchain |
 | `ghostty` | mac | sí | Ghostty, `~/.config/ghostty` |
 | `wezterm` | todas | linux, wsl | mac: cask + `~/.wezterm.lua`; linux: `~/.wezterm.lua`; wsl: copia al home de Windows y winget |
-| `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo` o `limpia`); con `repo` también engram (memoria de los agentes) |
+| `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo`, copia de `opencode/`, o `limpia`); con `repo` también engram (memoria de los agentes) |
 | `zed` | mac, linux | no | editor Zed (mac: cask; linux: script oficial en `~/.local`) |
 | `orca` | mac | sí | Orca, orquestador de agentes de IA (cask `stablyai/orca/orca`) |
 | `gentleai` | todas | sí | binario de [gentle-ai](https://github.com/Gentleman-Programming/gentle-ai), configurador de agentes de IA (tap `gentleman-programming/tap`). Solo se instala: no ejecutarlo con la variante `repo` de opencode, porque reescribiría `opencode/` |
@@ -104,7 +104,7 @@ En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unz
   - `limpia`: el LazyVim starter, sin personalizar.
 
   Al cambiar de variante (o si había otra config) se mueven a `*.backup-<fecha>` tanto `~/.config/nvim` como los datos de nvim (`~/.local/share/nvim`, `~/.local/state/nvim`, `~/.cache/nvim`), para que la variante nueva arranque desde cero. La TUI siempre propone `repo`, así que quien haya probado la limpia vuelve a la del repo con solo reejecutar.
-- **opencode:** también tiene dos variantes, `repo` (por defecto, enlaza `opencode/`) y `limpia` (`~/.config/opencode` vacío: opencode usa sus valores por defecto). Al cambiar se mueve la config a `*.backup-<fecha>`; los datos de opencode (login, sesiones) no se tocan. opencode escribe `cli.json` y `service.json` en su config, que con la variante `repo` es el repo: están en `.gitignore`. La variante `repo` usa [engram](https://github.com/Gentleman-Programming/engram) (plugin `plugins/engram.ts` + MCP), que se instala desde el tap `gentleman-programming/tap`; `plugins/engram.ts` es el que genera `engram setup opencode`, y conviene regenerarlo al actualizar engram.
+- **opencode:** también tiene dos variantes, `repo` (por defecto, **copia** `opencode/` a `~/.config/opencode`) y `limpia` (`~/.config/opencode` vacío: opencode usa sus valores por defecto). Con `repo` la config es una carpeta de la máquina, no un enlace: lo que escriben opencode, Orca, engram o gentle-ai (`cli.json`, `service.json`, plugins que se registran solos…) se queda ahí y no ensucia el repo, y funciona igual desde la terminal que desde Orca. A cambio, los cambios no se sincronizan solos: para guardar en el repo la config del momento, cópiala a mano a `opencode/`; para volver a copiar la del repo, mueve `~/.config/opencode` y ejecuta otra vez el módulo. Si `~/.config/opencode` es un enlace al repo (layout antiguo), el instalador lo pasa a una copia y se lleva `cli.json`/`service.json` fuera del repo. Al cambiar de variante se mueve la config a `*.backup-<fecha>`; los datos de opencode (login, sesiones) no se tocan. La variante `repo` usa [engram](https://github.com/Gentleman-Programming/engram) (plugin `plugins/engram.ts` + MCP), que se instala desde el tap `gentleman-programming/tap`; `plugins/engram.ts` es el que genera `engram setup opencode`, y conviene regenerarlo al actualizar engram.
 
 ## Configuración actual
 
