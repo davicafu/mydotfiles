@@ -17,7 +17,7 @@ cd ~/mydotfiles
 3. **Intérprete:** zsh
 4. **Prompt:** powerlevel10k
 5. **Multiplexor:** tmux (por defecto), zellij, ambos o ninguno
-6. **Paquetes** (selección múltiple): font, git, nvim, orca y gentleai vienen marcados; go, opencode, zed y monitorcontrol no
+6. **Paquetes** (selección múltiple): font, git, nvim, orca (mac) y gentleai vienen marcados, y herdr en linux/wsl; go, opencode, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
 7. **Herramientas CLI** (selección múltiple, con una descripción de cada una): las de siempre vienen marcadas y las opcionales no (ver tabla abajo)
 8. **Neovim** (si está marcado): `repo` (por defecto) o `limpia`
 9. **opencode** (si está marcado): `repo` (por defecto) o `limpia`
@@ -61,6 +61,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo`, copia de `opencode/`, o `limpia`); con `repo` también engram (memoria de los agentes) |
 | `zed` | mac, linux | no | editor Zed (mac: cask; linux: script oficial en `~/.local`) |
 | `orca` | mac | sí | Orca, orquestador de agentes de IA (cask `stablyai/orca/orca`) |
+| `herdr` | todas | linux, wsl | [herdr](https://herdr.dev), orquestador de agentes de IA como Orca pero en TUI y sin app móvil (fórmula `herdr`) |
 | `gentleai` | todas | sí | binario de [gentle-ai](https://github.com/Gentleman-Programming/gentle-ai), configurador de agentes de IA (tap `gentleman-programming/tap`). Solo se instala: no ejecutarlo con la variante `repo` de opencode, porque reescribiría `opencode/` |
 | `monitorcontrol` | mac | no | MonitorControl, brillo y volumen de monitores externos (cask `monitorcontrol`) |
 
