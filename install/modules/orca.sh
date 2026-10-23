@@ -3,7 +3,7 @@
 
 orca_desc() { echo "Orca orquestador de agentes de IA"; }
 orca_supported() { [[ "$(os_kind)" == mac ]]; }
-orca_default() { return 1; }
+orca_default() { return 0; }
 
 # Puede estar instalado desde el .dmg, sin brew
 orca_app_ok() { [[ -d /Applications/Orca.app ]] || brew_satisfied orca; }
