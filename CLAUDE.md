@@ -18,6 +18,7 @@ Personal dotfiles for macOS (Ghostty) and Linux/WSL (WezTerm). There is no build
 | `.wezterm.lua` | `~/.wezterm.lua` (on WSL, copied to the Windows user dir) | |
 | `git/config` | included from `~/.gitconfig` (`include.path`) | global git config; identity stays in `~/.gitconfig` |
 | `opencode/` | copied to `~/.config/opencode` | opencode agent config; `AGENTS.md`/skills/prompts here are for opencode, **not** instructions for working in this repo |
+| `claude/` | `skills/*` copied to `~/.agents/skills` and linked from `~/.claude/skills` (`npx skills -g` layout); `CLAUDE.md` imported from `~/.claude/CLAUDE.md` (`@` line) | the owner's personal skills and global agent instructions, agnostic of any employer. Copied once, not refreshed, like `opencode/`. Third-party skills (Matt Pocock) are not vendored: the installer only prints how to install them |
 
 **zsh layout.** `~/.zshrc` is a regular file that belongs to each machine. Its first line sources `zsh/zshrc` from the repo, and whatever other installers append (mise…) goes below it, outside the repo. Don't move machine-specific things into the repo. `90-plugins.zsh` defers autosuggestions and syntax-highlighting to the first `precmd`, so they load after everything in `~/.zshrc`. The old layout, with `zsh/` symlinked as `ZDOTDIR`, made other installers write into the repo; `install/modules/zsh.sh` migrates it. Don't commit `*.backup-*` files.
 

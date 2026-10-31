@@ -17,7 +17,7 @@ cd ~/mydotfiles
 3. **Intérprete:** zsh
 4. **Prompt:** powerlevel10k
 5. **Multiplexor:** tmux (por defecto), zellij, ambos o ninguno
-6. **Paquetes** (selección múltiple): font, git, nvim, orca (mac) y gentleai vienen marcados, y herdr en linux/wsl; go, opencode, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
+6. **Paquetes** (selección múltiple): font, git, nvim, claude, orca (mac) y gentleai vienen marcados, y herdr en linux/wsl; go, opencode, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
 7. **Herramientas CLI** (selección múltiple, con una descripción de cada una): las de siempre vienen marcadas y las opcionales no (ver tabla abajo)
 8. **Neovim** (si está marcado): `repo` (por defecto) o `limpia`
 9. **opencode** (si está marcado): `repo` (por defecto) o `limpia`
@@ -59,6 +59,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `ghostty` | mac | sí | Ghostty, `~/.config/ghostty` |
 | `wezterm` | todas | linux, wsl | mac: cask + `~/.wezterm.lua`; linux: `~/.wezterm.lua`; wsl: copia al home de Windows y winget |
 | `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo`, copia de `opencode/`, o `limpia`); con `repo` también engram (memoria de los agentes) |
+| `claude` | todas | sí | skills personales de `claude/skills` (copiadas a `~/.agents/skills` y enlazadas desde `~/.claude/skills`), una línea en `~/.claude/CLAUDE.md` que importa `claude/CLAUDE.md` y cómo instalar las skills de Matt Pocock |
 | `zed` | mac, linux | no | editor Zed (mac: cask; linux: script oficial en `~/.local`) |
 | `orca` | mac | sí | Orca, orquestador de agentes de IA (cask `stablyai/orca/orca`) |
 | `herdr` | todas | linux, wsl | [herdr](https://herdr.dev), orquestador de agentes de IA como Orca pero en TUI y sin app móvil (fórmula `herdr`) |
@@ -106,6 +107,7 @@ En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unz
 
   Al cambiar de variante (o si había otra config) se mueven a `*.backup-<fecha>` tanto `~/.config/nvim` como los datos de nvim (`~/.local/share/nvim`, `~/.local/state/nvim`, `~/.cache/nvim`), para que la variante nueva arranque desde cero. La TUI siempre propone `repo`, así que quien haya probado la limpia vuelve a la del repo con solo reejecutar.
 - **opencode:** también tiene dos variantes, `repo` (por defecto, **copia** `opencode/` a `~/.config/opencode`) y `limpia` (`~/.config/opencode` vacío: opencode usa sus valores por defecto). Con `repo` la config es una carpeta de la máquina, no un enlace: lo que escriben opencode, Orca, engram o gentle-ai (`cli.json`, `service.json`, plugins que se registran solos…) se queda ahí y no ensucia el repo, y funciona igual desde la terminal que desde Orca. A cambio, los cambios no se sincronizan solos: para guardar en el repo la config del momento, cópiala a mano a `opencode/`; para volver a copiar la del repo, mueve `~/.config/opencode` y ejecuta otra vez el módulo. Si `~/.config/opencode` es un enlace al repo (layout antiguo), el instalador lo pasa a una copia y se lleva `cli.json`/`service.json` fuera del repo. Al cambiar de variante se mueve la config a `*.backup-<fecha>`; los datos de opencode (login, sesiones) no se tocan. La variante `repo` usa [engram](https://github.com/Gentleman-Programming/engram) (plugin `plugins/engram.ts` + MCP), que se instala desde el tap `gentleman-programming/tap`; `plugins/engram.ts` es el que genera `engram setup opencode`, y conviene regenerarlo al actualizar engram.
+- **claude:** las skills de `claude/skills` son personales, para todos los repos, y siguen el layout de `npx skills add -g`: se copian a `~/.agents/skills/<skill>` (opencode y otros agentes) y se enlazan desde `~/.claude/skills/<skill>` (Claude Code). Se copian una vez y no se refrescan, como la config de opencode: si cambias una skill en la máquina, pásala al repo a mano. Una skill que ya está en `~/.claude/skills` no se toca. `~/.claude/CLAUDE.md` es un fichero de cada máquina, como `~/.zshrc`: el instalador solo le añade `@<repo>/claude/CLAUDE.md`, y lo propio de cada trabajo se queda en ese fichero, fuera del repo.
 
 ## Configuración actual
 
@@ -169,6 +171,26 @@ zellij plugin -- "file:$HOME/.config/zellij/plugins/zjstatus.wasm"
 - Syntax/parsing: `treesitter`.
 - AI plugins: `copilot` (extra de LazyVim), `codecompanion`.
 - Disabled plugins (`lua/disabled-plugins/`): `avante`, `copilot-chat`, `copilot.lua`.
+
+### Agentes de IA
+
+`claude/CLAUDE.md` son las instrucciones globales, sin nada de ninguna empresa: qué skill usar según la tarea, el protocolo de trabajo (entender, planificar, cambiar, depurar con pruebas, verificar, informar) y los límites (nada hacia fuera sin aprobación, commits solo cuando se piden, producción en solo lectura).
+
+Skills personales de `claude/skills`:
+
+| Skill | Para qué |
+|---|---|
+| `thermo-nuclear-code-quality-review` | revisión de PRs muy estricta, centrada en mantenibilidad |
+| `council-review` | la misma revisión con tres revisores independientes y conciliación |
+| `clickhouse-cloud-ops` | diagnóstico de problemas en producción de ClickHouse Cloud, en solo lectura. Los accesos de cada organización van en `references/access.md`, que no se incluye |
+| `daily` | resumen diario para el standup a partir del historial de Claude Code y git |
+
+`CLAUDE.md` también usa las skills de [Matt Pocock](https://github.com/mattpocock/skills) (`tdd`, `diagnosing-bugs`, `codebase-design`, `pr`, `handoff`…), que no están en el repo. El instalador no las instala solo:
+
+- **Claude Code:** `claude plugin install mattpocock-skills@claude-plugins-official` (se actualiza solo).
+- **opencode** (no tiene plugins): si opencode está instalado, el instalador ofrece `npx skills@latest add mattpocock/skills -g -a opencode` (necesita Node, desmarcado por defecto y nunca con `-y`). Se actualizan con `npx skills update`.
+
+No instales las dos cosas para el mismo agente, porque saldría cada skill dos veces.
 
 ### Herramientas opcionales
 
