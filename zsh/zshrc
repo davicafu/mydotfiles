@@ -1,5 +1,5 @@
 # Config de zsh de mydotfiles. ~/.zshrc la carga con `source` en su primera
-# línea; lo que haya debajo en ~/.zshrc es de esa máquina (mise, factorial-dev...)
+# línea; lo que haya debajo en ~/.zshrc es de esa máquina (mise...)
 # y se ejecuta después.
 #
 # Los módulos de conf.d/ se cargan por orden de nombre:

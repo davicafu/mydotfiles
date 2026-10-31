@@ -2,7 +2,7 @@
 #
 # ~/.zshrc es un fichero de cada máquina, no un enlace al repo. Su primera
 # línea carga la config del repo (zsh/zshrc) y debajo queda lo que añadan
-# otros instaladores (mise, factorial-dev...), que se ejecuta después. Así el
+# otros instaladores (mise...), que se ejecuta después. Así el
 # repo nunca se modifica al instalar otras herramientas.
 
 ZSHRC="$HOME/.zshrc"
