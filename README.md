@@ -17,7 +17,7 @@ cd ~/mydotfiles
 3. **Intérprete:** zsh
 4. **Prompt:** powerlevel10k
 5. **Multiplexor:** tmux (por defecto), zellij, ambos o ninguno
-6. **Paquetes** (selección múltiple): font, git, nvim, claude, orca (mac) y gentleai vienen marcados, y herdr en linux/wsl; go, opencode, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
+6. **Paquetes** (selección múltiple): font, git, nvim, claude, orca (mac) y gentleai vienen marcados, y herdr en linux/wsl; go, opencode, pi, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
 7. **Herramientas CLI** (selección múltiple, con una descripción de cada una): las de siempre vienen marcadas y las opcionales no (ver tabla abajo)
 8. **Neovim** (si está marcado): `repo` (por defecto) o `limpia`
 9. **opencode** (si está marcado): `repo` (por defecto) o `limpia`
@@ -59,6 +59,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `ghostty` | mac | sí | Ghostty, `~/.config/ghostty` |
 | `wezterm` | todas | linux, wsl | mac: cask + `~/.wezterm.lua`; linux: `~/.wezterm.lua`; wsl: copia al home de Windows y winget |
 | `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo`, copia de `opencode/`, o `limpia`); con `repo` también engram (memoria de los agentes) |
+| `pi` | todas | no | [pi](https://pi.dev), agente de programación de IA en la terminal (fórmula `pi-coding-agent`, necesita node). Si `pi` ya está en el `PATH` (npm, mise…) no se toca |
 | `claude` | todas | sí | skills personales de `claude/skills` (copiadas a `~/.agents/skills` y enlazadas desde `~/.claude/skills`), una línea en `~/.claude/CLAUDE.md` que importa `claude/CLAUDE.md` y cómo instalar las skills de Matt Pocock |
 | `zed` | mac, linux | no | editor Zed (mac: cask; linux: script oficial en `~/.local`) |
 | `orca` | mac | sí | Orca, orquestador de agentes de IA (cask `stablyai/orca/orca`) |
@@ -86,7 +87,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `pandoc` | no | conversor de documentos (md, docx, pdf, html) |
 | `chafa` | no | muestra imágenes en la terminal |
 
-Los aliases y funciones de zsh usan eza, bat, fzf, fd, ripgrep, zoxide y atuin: si desmarcas alguna que no esté instalada, el instalador avisa.
+Los aliases y funciones de zsh usan eza, bat, fzf, fd, ripgrep, zoxide y atuin, y si falta alguna caen a los comandos del sistema (`ls`, `cat`, `find`, `grep`…). Al terminar, el instalador avisa de cada una que no esté instalada (desmarcada o porque brew falló) y de qué deja de funcionar. Si brew no consigue instalar alguna, el resto sigue y el módulo `tools` acaba en «Con errores».
 
 En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unzip`.
 
