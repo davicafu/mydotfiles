@@ -88,7 +88,7 @@ tools_brewfile() {
 }
 
 tools_install() {
-  local selected="" id missing="" file
+  local selected="" id missing="" file failed=""
   tools_prime_cache
   for id in $(tools_selected); do
     if [[ -z "$(tools_field "$id" 1)" ]]; then
@@ -112,18 +112,41 @@ tools_install() {
       if [[ "$DRY_RUN" == 1 ]]; then
         sed 's/^/  [dry-run] /' "$file"
       else
-        run brew bundle install --no-upgrade --file="$file"
-        log_ok "Instaladas:$missing"
+        # Si falla alguna se sigue: abajo se avisa de cuáles faltan
+        run brew bundle install --no-upgrade --file="$file" || true
         tools_prime_cache
+        for id in $missing; do
+          if tools_is_installed "$id"; then
+            log_ok "Instalada: $id"
+          else
+            log_err "No se pudo instalar $id (detalles en el log)"
+            failed="$failed $id"
+          fi
+        done
       fi
       rm -f "$file"
     fi
   fi
 
-  # Avisa si zsh usa alguna que no está ni elegida ni instalada
+  # zsh usa estas si están; si no, cae a los comandos del sistema
+  [[ "$DRY_RUN" == 1 ]] && return 0
   for id in $TOOLS_USED_BY_ZSH; do
-    [[ " $selected " == *" $id "* ]] && continue
     tools_is_installed "$id" ||
-      log_warn "$id no está instalada y zsh la usa: $(tools_field "$id" 4)"
+      log_warn "$id no está instalada: $(tools_fallback "$id")"
   done
+  # Que el resumen final lo cuente como error
+  [[ -z "$failed" ]]
+}
+
+# Qué hace zsh (zsh/conf.d) cuando falta una herramienta.
+tools_fallback() {
+  case "$1" in
+    eza) echo "ls · ll y la usan ls del sistema; lt usa tree si está; sin vista previa en cdf" ;;
+    bat) echo "cat es el del sistema; sin vista previa en ff · fg · gls" ;;
+    fd) echo "find es el del sistema; cdf y ff no funcionan" ;;
+    ripgrep) echo "grep es el del sistema; fg no funciona" ;;
+    fzf) echo "cdf · ff · fg · fkill · glc y gls no funcionan" ;;
+    zoxide) echo "no hay z; cd normal" ;;
+    atuin) echo "Ctrl-R usa el historial normal de zsh" ;;
+  esac
 }
