@@ -11,7 +11,7 @@ Loaded in every project. A project's own CLAUDE.md/AGENTS.md wins where they dis
 
 ## Route by task
 
-Before acting, match the task to a skill and load it; its steps replace your default approach. A skill that is not installed is skipped: follow the protocol below instead. Matt Pocock's skills appear in Claude Code with the `mattpocock-skills:` prefix. A project skill covering the same ground runs alongside these, and its conventions win.
+Before acting, match the task to a skill and load it; its steps replace your default approach. A skill that is not installed is skipped: follow the protocol below instead. Matt Pocock's skills may carry a `mattpocock-skills:` prefix (Claude Code plugin). A project skill covering the same ground runs alongside these, and its conventions win.
 
 | Task | Skill |
 |---|---|
@@ -56,7 +56,7 @@ Review feedback, mine or a reviewer's, is checked against the code before acting
 
 ## Memory
 
-- Claude Auto Memory: stable operational preferences and useful repo-specific reminders.
+- The agent's built-in memory (Claude Auto Memory or its equivalent), if it has one: stable operational preferences and useful repo-specific reminders.
 - Engram: durable technical discoveries, architectural decisions, historical context. For feature docs, store a summary, the decisions and a pointer, never the full text.
 - Feature docs live in the repo (default `docs/features/<name>.md`, unless the project says otherwise).
 - Do not save every command, interaction or temporary task detail; retrieve only history relevant to the current task.

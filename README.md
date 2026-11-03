@@ -17,7 +17,7 @@ cd ~/mydotfiles
 3. **Intérprete:** zsh
 4. **Prompt:** powerlevel10k
 5. **Multiplexor:** tmux (por defecto), zellij, ambos o ninguno
-6. **Paquetes** (selección múltiple): font, git, nvim, claude, orca (mac) y gentleai vienen marcados, y herdr en linux/wsl; go, opencode, pi, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
+6. **Paquetes** (selección múltiple): font, git, nvim, claude, gentleai, agents y orca (mac) vienen marcados, y herdr en linux/wsl; go, opencode, gentleshell, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
 7. **Herramientas CLI** (selección múltiple, con una descripción de cada una): las de siempre vienen marcadas y las opcionales no (ver tabla abajo)
 8. **Neovim** (si está marcado): `repo` (por defecto) o `limpia`
 9. **opencode** (si está marcado): `repo` (por defecto) o `limpia`
@@ -58,13 +58,14 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `go` | todas | no | Go toolchain |
 | `ghostty` | mac | sí | Ghostty, `~/.config/ghostty` |
 | `wezterm` | todas | linux, wsl | mac: cask + `~/.wezterm.lua`; linux: `~/.wezterm.lua`; wsl: copia al home de Windows y winget |
+| `claude` | todas | sí | [Claude Code](https://code.claude.com) con el script oficial (`~/.local/bin`, se actualiza solo). Si `claude` ya está (cask, npm…) no se toca. Lo conecta a las skills e instrucciones globales (ver `agents`) |
 | `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo`, copia de `opencode/`, o `limpia`); con `repo` también engram (memoria de los agentes) |
-| `pi` | todas | no | [pi](https://pi.dev), agente de programación de IA en la terminal (fórmula `pi-coding-agent`, necesita node). Si `pi` ya está en el `PATH` (npm, mise…) no se toca |
-| `claude` | todas | sí | skills personales de `claude/skills` (copiadas a `~/.agents/skills` y enlazadas desde `~/.claude/skills`), una línea en `~/.claude/CLAUDE.md` que importa `claude/CLAUDE.md` y cómo instalar las skills de Matt Pocock |
+| `gentleai` | todas | sí | binario de [gentle-ai](https://github.com/Gentleman-Programming/gentle-ai), configurador de agentes de IA (tap `gentleman-programming/tap`). Solo se instala, no se ejecuta: `gentle-ai install` reescribe la config de cada agente (en opencode, la copia de `~/.config/opencode`, no el repo) |
+| `gentleshell` | todas | no | [Gentle Shell](https://github.com/Gentleman-Programming/gentle-shell), workspace de agentes de IA sobre pi con gentle-ai y Engram. Lo instala `gentle-ai shell install` (TUI propio, en `~/.gentle-shell`); con `-y` solo se muestra el comando. Instala gentle-ai si falta y lo conecta a las skills e instrucciones globales |
+| `agents` | todas | sí | AI Agents: skills personales de `agents/skills` e instrucciones globales de `agents/AGENTS.md` para Claude Code, opencode, pi y Gentle Shell: los que encuentre en la máquina, también los instalados fuera del repo (ver nota), y cómo instalar las skills de Matt Pocock |
 | `zed` | mac, linux | no | editor Zed (mac: cask; linux: script oficial en `~/.local`) |
 | `orca` | mac | sí | Orca, orquestador de agentes de IA (cask `stablyai/orca/orca`) |
 | `herdr` | todas | linux, wsl | [herdr](https://herdr.dev), orquestador de agentes de IA como Orca pero en TUI y sin app móvil (fórmula `herdr`) |
-| `gentleai` | todas | sí | binario de [gentle-ai](https://github.com/Gentleman-Programming/gentle-ai), configurador de agentes de IA (tap `gentleman-programming/tap`). Solo se instala: no ejecutarlo con la variante `repo` de opencode, porque reescribiría `opencode/` |
 | `monitorcontrol` | mac | no | MonitorControl, brillo y volumen de monitores externos (cask `monitorcontrol`) |
 
 **Herramientas CLI** (`install/modules/tools.sh`):
@@ -108,7 +109,7 @@ En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unz
 
   Al cambiar de variante (o si había otra config) se mueven a `*.backup-<fecha>` tanto `~/.config/nvim` como los datos de nvim (`~/.local/share/nvim`, `~/.local/state/nvim`, `~/.cache/nvim`), para que la variante nueva arranque desde cero. La TUI siempre propone `repo`, así que quien haya probado la limpia vuelve a la del repo con solo reejecutar.
 - **opencode:** también tiene dos variantes, `repo` (por defecto, **copia** `opencode/` a `~/.config/opencode`) y `limpia` (`~/.config/opencode` vacío: opencode usa sus valores por defecto). Con `repo` la config es una carpeta de la máquina, no un enlace: lo que escriben opencode, Orca, engram o gentle-ai (`cli.json`, `service.json`, plugins que se registran solos…) se queda ahí y no ensucia el repo, y funciona igual desde la terminal que desde Orca. A cambio, los cambios no se sincronizan solos: para guardar en el repo la config del momento, cópiala a mano a `opencode/`; para volver a copiar la del repo, mueve `~/.config/opencode` y ejecuta otra vez el módulo. Si `~/.config/opencode` es un enlace al repo (layout antiguo), el instalador lo pasa a una copia y se lleva `cli.json`/`service.json` fuera del repo. Al cambiar de variante se mueve la config a `*.backup-<fecha>`; los datos de opencode (login, sesiones) no se tocan. La variante `repo` usa [engram](https://github.com/Gentleman-Programming/engram) (plugin `plugins/engram.ts` + MCP), que se instala desde el tap `gentleman-programming/tap`; `plugins/engram.ts` es el que genera `engram setup opencode`, y conviene regenerarlo al actualizar engram.
-- **claude:** las skills de `claude/skills` son personales, para todos los repos, y siguen el layout de `npx skills add -g`: se copian a `~/.agents/skills/<skill>` (opencode y otros agentes) y se enlazan desde `~/.claude/skills/<skill>` (Claude Code). Se copian una vez y no se refrescan, como la config de opencode: si cambias una skill en la máquina, pásala al repo a mano. Una skill que ya está en `~/.claude/skills` no se toca. `~/.claude/CLAUDE.md` es un fichero de cada máquina, como `~/.zshrc`: el instalador solo le añade `@<repo>/claude/CLAUDE.md`, y lo propio de cada trabajo se queda en ese fichero, fuera del repo.
+- **agents:** las skills de `agents/skills` son personales, para todos los repos, y las instrucciones de `agents/AGENTS.md` valen para todos los agentes. La base común es la misma para todos: las skills se copian a `~/.agents/skills/<skill>` (layout de `npx skills add -g`) y `agents/AGENTS.md` se enlaza en `~/.agents/AGENTS.md`. Encima, cada agente se conecta a su manera: Claude Code enlaza cada skill en `~/.claude/skills` y recibe una línea `@<repo>/agents/AGENTS.md` en `~/.claude/CLAUDE.md` (no lee `AGENTS.md`, y ese fichero es de cada máquina, como `~/.zshrc`: lo propio de cada trabajo se queda ahí); opencode lee `~/.agents/skills` y carga `~/.agents/AGENTS.md` con `instructions` en `opencode.json` en la variante `repo` (sumado al `AGENTS.md` de gentle-ai), y en la `limpia` se le enlaza `~/.config/opencode/AGENTS.md`; pi y Gentle Shell leen `~/.agents/skills` y reciben el enlace en `~/.pi/agent/AGENTS.md` y `~/.gentle-shell/agent/AGENTS.md`. Los módulos `claude`, `opencode` y `gentleshell` conectan su agente al instalarse, y su `--status` sale parcial si falta; `agents` lo hace con todos los que encuentre, también los instalados fuera del repo (pi con npm, por ejemplo). Las skills se copian una vez y no se refrescan, como la config de opencode: si cambias una en la máquina, pásala al repo a mano; `AGENTS.md` es un enlace y los cambios del repo llegan solos. Lo que ya existe no se toca: una skill que el agente ya encuentra se deja, y un `AGENTS.md` propio se avisa y `--status` lo marca como conflicto. El `AGENTS.md` de cada proyecto manda sobre estas instrucciones.
 
 ## Configuración actual
 
@@ -175,18 +176,18 @@ zellij plugin -- "file:$HOME/.config/zellij/plugins/zjstatus.wasm"
 
 ### Agentes de IA
 
-`claude/CLAUDE.md` son las instrucciones globales, sin nada de ninguna empresa: qué skill usar según la tarea, el protocolo de trabajo (entender, planificar, cambiar, depurar con pruebas, verificar, informar) y los límites (nada hacia fuera sin aprobación, commits solo cuando se piden, producción en solo lectura).
+`agents/AGENTS.md` son las instrucciones globales, sin nada de ninguna empresa: qué skill usar según la tarea, el protocolo de trabajo (entender, planificar, cambiar, depurar con pruebas, verificar, informar) y los límites (nada hacia fuera sin aprobación, commits solo cuando se piden, producción en solo lectura).
 
-Skills personales de `claude/skills`:
+Skills personales de `agents/skills`:
 
 | Skill | Para qué |
 |---|---|
 | `thermo-nuclear-code-quality-review` | revisión de PRs muy estricta, centrada en mantenibilidad |
-| `council-review` | la misma revisión con tres revisores independientes y conciliación |
+| `council-review` | la misma revisión con tres revisores independientes y conciliación (los lanza con `pi`, o con `gentle-shell` si no hay `pi`) |
 | `clickhouse-cloud-ops` | diagnóstico de problemas en producción de ClickHouse Cloud, en solo lectura. Los accesos de cada organización van en `references/access.md`, que no se incluye |
 | `daily` | resumen diario para el standup a partir del historial de Claude Code y git |
 
-`CLAUDE.md` también usa las skills de [Matt Pocock](https://github.com/mattpocock/skills) (`tdd`, `diagnosing-bugs`, `codebase-design`, `pr`, `handoff`…), que no están en el repo. El instalador no las instala solo:
+`AGENTS.md` también usa las skills de [Matt Pocock](https://github.com/mattpocock/skills) (`tdd`, `diagnosing-bugs`, `codebase-design`, `pr`, `handoff`…), que no están en el repo. El instalador no las instala solo:
 
 - **Claude Code:** `claude plugin install mattpocock-skills@claude-plugins-official` (se actualiza solo).
 - **opencode** (no tiene plugins): si opencode está instalado, el instalador ofrece `npx skills@latest add mattpocock/skills -g -a opencode` (necesita Node, desmarcado por defecto y nunca con `-y`). Se actualizan con `npx skills update`.

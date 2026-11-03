@@ -32,6 +32,8 @@ pi -p --approve --session /tmp/council-review-<task>-fable.jsonl --model anthrop
 pi -p --approve --session /tmp/council-review-<task>-opus.jsonl --model anthropic/claude-opus-5-5 --thinking xhigh "Run thermo-nuclear-code-quality-review independently. <scope and context>. Do not delegate."
 ```
 
+If `pi` is not on the PATH but Gentle Shell is, run the same commands with `gentle-shell` in place of `pi`: it forwards its arguments to Pi.
+
 Reuse each member's session and model for follow-ups. Temporary council prompts and session files are allowed; the reviewed code stays read-only.
 
 For re-reviews, resolve the current target again, provide the changed evidence, and recheck previous findings rather than carrying them forward as facts. For multiple PRs, give a verdict per PR and check their interaction.

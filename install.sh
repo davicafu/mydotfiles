@@ -15,7 +15,7 @@ for f in "$DOTFILES"/install/modules/*.sh; do
 done
 
 # Orden de instalación
-MODULES="font git tools zsh p10k tmux zellij nvim go ghostty wezterm opencode pi claude zed orca herdr gentleai monitorcontrol"
+MODULES="font git tools zsh p10k tmux zellij nvim go ghostty wezterm claude opencode gentleai gentleshell agents zed orca herdr monitorcontrol"
 
 # Pasos de la TUI (elección única). "a+b" es una opción que instala ambos.
 TERMINALS="ghostty wezterm"
@@ -23,7 +23,7 @@ SHELLS="zsh"
 PROMPTS="p10k"
 MULTIPLEXERS="tmux zellij tmux+zellij"
 # Paso final (elección múltiple)
-PACKAGES="font git nvim go opencode pi claude zed orca herdr gentleai monitorcontrol"
+PACKAGES="font git nvim go claude opencode gentleai gentleshell agents zed orca herdr monitorcontrol"
 
 usage() {
   cat <<EOF
@@ -120,7 +120,7 @@ print_status() {
   local m s
   for m in $(supported_modules); do
     s="$(module_status "$m")"
-    printf '  %-10s %s %s\n' "$m" "$(pad "$("${m}_desc")" 55)" \
+    printf '  %-14s %s %s\n' "$m" "$(pad "$("${m}_desc")" 55)" \
       "$(gum style --foreground "$(status_color "$s")" "$(status_label "$s")")"
   done
 }
@@ -139,7 +139,7 @@ is_supported() { supported_modules | grep -xF "$1" >/dev/null; }
 
 module_line() {
   local m="$1"
-  printf '%-12s %s  [%s]' "$m" "$("${m}_desc")" "$(status_label "$(module_status "$m")")"
+  printf '%-14s %s  [%s]' "$m" "$("${m}_desc")" "$(status_label "$(module_status "$m")")"
 }
 
 # Elige el SO destino. Por defecto, el detectado.

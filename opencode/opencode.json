@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "instructions": ["~/.agents/AGENTS.md"],
   "agent": {
     "gentle-orchestrator": {
       "description": "Gentle AI SDD Orchestrator - coordinates sub-agents, never does work inline",

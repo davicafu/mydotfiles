@@ -59,17 +59,19 @@ opencode_target_variant() {
 }
 
 opencode_status() {
-  local config
+  local config setup=pending
   case "$(opencode_current_variant)" in
     "$(opencode_target_variant)") config=ok ;;
     ninguna | enlace) config=pending ;;
     *) config=conflict ;;
   esac
+  # Las skills e instrucciones globales solo cuentan con opencode instalado
+  if brew_satisfied opencode; then setup="$(agents_setup_status opencode)"; fi
   # La config del repo usa engram (plugin + MCP)
   if [[ "$(opencode_target_variant)" == repo ]]; then
-    combine_status "$(status_of brew_satisfied opencode)" "$(status_of brew_satisfied engram)" "$config"
+    combine_status "$(status_of brew_satisfied opencode)" "$(status_of brew_satisfied engram)" "$config" "$setup"
   else
-    combine_status "$(status_of brew_satisfied opencode)" "$config"
+    combine_status "$(status_of brew_satisfied opencode)" "$config" "$setup"
   fi
 }
 
@@ -149,4 +151,6 @@ opencode_install() {
     log_ok "Config limpia de opencode en $cfg"
     log_info "Para pasar a la config del repo: ./install.sh --opencode repo opencode"
   fi
+  # Skills e instrucciones globales (módulo agents), ya con la config puesta
+  agents_setup opencode
 }

@@ -272,6 +272,8 @@ combine_status() {
     case "$s" in
       conflict) echo conflict && return ;;
       ok) any_ok=1 ;;
+      # Viene de otro combine_status: tiene algo hecho y algo pendiente
+      partial) any_ok=1 any_pending=1 ;;
       *) any_pending=1 ;;
     esac
   done
