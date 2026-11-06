@@ -21,6 +21,10 @@ Before acting, match the task to a skill and load it; its steps replace your def
 | Bug, failing test, unexpected behaviour, regression | `diagnosing-bugs` |
 | Writing or changing code with tests | `tdd` |
 | Go code (style, errors, concurrency, testing, performance) | the matching `golang-*` skill (samber pack) |
+| New UI or visual redesign | `frontend-design` |
+| React or Next.js code | `vercel-react-best-practices`, `vercel-composition-patterns` for component APIs |
+| Reviewing UI, accessibility or UX | `web-design-guidelines` |
+| Tauri app (desktop or mobile) | `tauri-v2` |
 | Module boundaries, interfaces, seams, testability | `codebase-design` |
 | Domain terms, glossary, ADRs | `domain-modeling` |
 | Stress-testing a plan or idea | `grilling` |

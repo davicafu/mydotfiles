@@ -17,7 +17,7 @@ cd ~/mydotfiles
 3. **Intérprete:** zsh
 4. **Prompt:** powerlevel10k
 5. **Multiplexor:** tmux (por defecto), zellij, ambos o ninguno
-6. **Paquetes** (selección múltiple): font, git, nvim, claude, gentleai, agents y orca (mac) vienen marcados, y herdr en linux/wsl; go, opencode, gentleshell, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
+6. **Paquetes** (selección múltiple): font, git, nvim, claude, gentleai, agents y orca (mac) vienen marcados, y herdr en linux/wsl; go, rust, opencode, gentleshell, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
 7. **Herramientas CLI** (selección múltiple, con una descripción de cada una): las de siempre vienen marcadas y las opcionales no (ver tabla abajo)
 8. **Neovim** (si está marcado): `repo` (por defecto) o `limpia`
 9. **opencode** (si está marcado): `repo` (por defecto) o `limpia`
@@ -54,15 +54,16 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `p10k` | todas | sí | powerlevel10k (la config está en `zsh/.p10k.zsh`) |
 | `tmux` | todas | sí | tmux, `~/.config/tmux` + `~/.tmux.conf`, TPM y plugins, win32yank en WSL |
 | `zellij` | todas | no | zellij, `~/.config/zellij` |
-| `nvim` | todas | sí | neovim + formatters, kdlfmt (cargo), `~/.config/nvim` (variante `repo` o `limpia`), plugins, win32yank en WSL |
+| `nvim` | todas | sí | neovim + formatters, kdlfmt (cargo; si no hay, instala Rust como el módulo `rust`), `~/.config/nvim` (variante `repo` o `limpia`), plugins, win32yank en WSL |
 | `go` | todas | no | Go toolchain |
+| `rust` | todas | no | Rust con [rustup](https://rustup.rs) (script oficial, `~/.cargo/bin`, se actualiza con `rustup update`). rustup y no la fórmula de brew porque Tauri lo necesita para los targets de móvil; si también está la fórmula `rust`, avisa de que sobra |
 | `ghostty` | mac | sí | Ghostty, `~/.config/ghostty` |
 | `wezterm` | todas | linux, wsl | mac: cask + `~/.wezterm.lua`; linux: `~/.wezterm.lua`; wsl: copia al home de Windows y winget |
 | `claude` | todas | sí | [Claude Code](https://code.claude.com) con el script oficial (`~/.local/bin`, se actualiza solo). Si `claude` ya está (cask, npm…) no se toca. Lo conecta a las skills e instrucciones globales (ver `agents`) |
 | `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo`, copia de `opencode/`, o `limpia`); con `repo` también engram (memoria de los agentes) |
 | `gentleai` | todas | sí | binario de [gentle-ai](https://github.com/Gentleman-Programming/gentle-ai), configurador de agentes de IA (tap `gentleman-programming/tap`). Solo se instala, no se ejecuta: `gentle-ai install` reescribe la config de cada agente (en opencode, la copia de `~/.config/opencode`, no el repo) |
 | `gentleshell` | todas | no | [Gentle Shell](https://github.com/Gentleman-Programming/gentle-shell), workspace de agentes de IA sobre pi con gentle-ai y Engram. Lo instala `gentle-ai shell install` (TUI propio, en `~/.gentle-shell`); con `-y` solo se muestra el comando. Instala gentle-ai si falta y lo conecta a las skills e instrucciones globales |
-| `agents` | todas | sí | AI Agents: skills personales de `agents/skills` e instrucciones globales de `agents/AGENTS.md` para Claude Code, opencode, pi y Gentle Shell: los que encuentre en la máquina, también los instalados fuera del repo (ver nota), y cómo instalar los packs de skills de terceros (Matt Pocock; Go si está instalado) |
+| `agents` | todas | sí | AI Agents: skills personales de `agents/skills` e instrucciones globales de `agents/AGENTS.md` para Claude Code, opencode, pi y Gentle Shell: los que encuentre en la máquina, también los instalados fuera del repo (ver nota), y cómo instalar los packs de skills de terceros (Matt Pocock y diseño frontend siempre; React/web si hay Node, Go si hay Go y Tauri si hay Rust) |
 | `zed` | mac, linux | no | editor Zed (mac: cask; linux: script oficial en `~/.local`) |
 | `orca` | mac | sí | Orca, orquestador de agentes de IA (cask `stablyai/orca/orca`) |
 | `herdr` | todas | linux, wsl | [herdr](https://herdr.dev), orquestador de agentes de IA como Orca pero en TUI y sin app móvil (fórmula `herdr`) |
@@ -99,7 +100,7 @@ En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unz
   - Si ya existía un `~/.zshrc` normal, su contenido se conserva debajo de la línea del repo (con backup previo).
   - **Migración del layout antiguo** (`ZDOTDIR` → `~/.config/zsh`): el instalador quita la línea de `ZDOTDIR` de `~/.zshenv`, convierte en ficheros normales los `~/.zshenv`/`~/.zprofile` que eran enlaces, añade el historial que vivía en el repo a `~/.zsh_history` y mueve los restos (oh-my-zsh, zcompdump…) a `~/.local/state/mydotfiles/zsh-legacy-<fecha>/`. Todo con backup.
   - Las terminales y el servidor de tmux que ya estuvieran abiertos conservan el `ZDOTDIR` antiguo hasta que los cierres.
-- **kdlfmt:** se instala en `~/.cargo/bin`, que debe estar en el `PATH` para que conform lo encuentre.
+- **kdlfmt:** se instala en `~/.cargo/bin`, que zsh pone en el `PATH` (`10-brew.zsh`) para que conform lo encuentre.
 - **git:** pide nombre y email sin valores de ejemplo: hay que escribirlos (Esc cancela). Si ya hay unos configurados salen precargados para mantenerlos o cambiarlos. Los guarda como `user.name`/`user.email` globales de ese ordenador, en `~/.gitconfig`. Con `--yes` no pregunta. `~/.gitconfig` incluye `git/config` con `[include]`. El include se añade al final, de modo que sus valores tienen prioridad, y el instalador avisa de qué claves cambian. `credential.helper = store` guarda las credenciales en texto plano en `~/.git-credentials`.
 - **wezterm:** `.wezterm.lua` fija `default_domain = "WSL:Ubuntu"`, un dominio que fuera de Windows no existe.
 - **zellij:** los plugins no funcionan con rutas relativas y los layouts tienen `/home/david` escrito a mano. El instalador ofrece reescribirlos a tu `$HOME` (opt-in, porque modifica ficheros del repo).
@@ -121,7 +122,7 @@ En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unz
 - aliases: `ls`/`ll`/`la`/`lt` con `eza`, `cat` con `bat`, `find` con `fd`, `grep` con `rg`
 - helpers con `fzf`: `cdf`, `ff`, `fg`, `fkill`, `glc`
 - arranque automatico de `zellij` con layout aleatorio (theme everfores, sakura y kanagawa). Se puede modificar en: `zsh/conf.d/60-functions.zsh` (función `zj`)
-- `~/.local/bin` en el `PATH` en todas las plataformas (`10-brew.zsh`): ahí instalan Claude Code, Gentle Shell, Zed (linux) y `win32yank` (WSL)
+- `~/.local/bin` y `~/.cargo/bin` (si existe) en el `PATH` en todas las plataformas, delante de brew (`10-brew.zsh`): en el primero instalan Claude Code, Gentle Shell, Zed (linux) y `win32yank` (WSL); en el segundo, rustup y `cargo install`
 
 ### Git
 
@@ -192,12 +193,15 @@ Packs de skills de terceros, que no están en el repo (`AGENTS_PACKS` en `instal
 | Pack | Cuándo | Para qué |
 |---|---|---|
 | [Matt Pocock](https://github.com/mattpocock/skills) | siempre | las que usa `AGENTS.md`: `tdd`, `diagnosing-bugs`, `codebase-design`, `pr`, `handoff`… |
+| [Diseño frontend (Anthropic)](https://github.com/anthropics/skills/tree/main/skills/frontend-design) | siempre | `frontend-design`: fija una dirección visual antes de escribir la interfaz, para que no salga genérica |
+| [React y web (Vercel)](https://github.com/vercel-labs/agent-skills) | si hay Node | `vercel-react-best-practices` (rendimiento en React/Next.js), `web-design-guidelines` (accesibilidad, UX), `vercel-composition-patterns`; sin plugin, también para Claude Code por skills.sh |
 | [Go (samber)](https://github.com/samber/cc-skills-golang) | si Go está instalado | estilo, errores, testing, concurrencia, rendimiento, seguridad, librerías habituales… (licencia MIT) |
+| [Tauri v2](https://github.com/nodnarbnitram/claude-code-extensions) | si hay Rust (`cargo`) | `tauri-v2`: apps de escritorio y móvil con Tauri v2 (IPC, capabilities, build); en Claude Code, plugin `cce-tauri` (licencia MIT) |
 
 El instalador no los instala solo:
 
-- **Claude Code:** muestra el comando del plugin (se actualiza solo): `claude plugin install mattpocock-skills@claude-plugins-official`, y para Go `claude plugin marketplace add samber/cc && claude plugin install cc-skills-golang@samber`.
-- **opencode, pi y Gentle Shell** (no tienen plugins): ofrece `npx skills@latest add <repo> --skill '*' -g -a <agentes> -y`, que deja las skills en `~/.agents/skills` (necesita Node, desmarcado por defecto y nunca con `-y`). Se actualizan con `npx skills update`.
+- **Claude Code:** si el pack tiene plugin, muestra su comando (se actualiza solo), p. ej. `claude plugin install mattpocock-skills@claude-plugins-official` o, para Go, `claude plugin marketplace add samber/cc && claude plugin install cc-skills-golang@samber`. Si no tiene (Vercel), entra en el `npx skills` de abajo con `-a claude-code`.
+- **opencode, pi y Gentle Shell** (no tienen plugins): ofrece `npx skills@latest add <repo> --skill <skills> -g -a <agentes> -y`, que deja las skills en `~/.agents/skills` (necesita Node, desmarcado por defecto y nunca con `-y`). Se actualizan con `npx skills update`.
 
 No instales las dos cosas para el mismo agente, porque saldría cada skill dos veces.
 

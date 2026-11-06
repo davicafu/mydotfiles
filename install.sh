@@ -15,7 +15,7 @@ for f in "$DOTFILES"/install/modules/*.sh; do
 done
 
 # Orden de instalación
-MODULES="font git tools zsh p10k tmux zellij nvim go ghostty wezterm claude opencode gentleai gentleshell agents zed orca herdr monitorcontrol"
+MODULES="font git tools zsh p10k tmux zellij rust nvim go ghostty wezterm claude opencode gentleai gentleshell agents zed orca herdr monitorcontrol"
 
 # Pasos de la TUI (elección única). "a+b" es una opción que instala ambos.
 TERMINALS="ghostty wezterm"
@@ -23,7 +23,7 @@ SHELLS="zsh"
 PROMPTS="p10k"
 MULTIPLEXERS="tmux zellij tmux+zellij"
 # Paso final (elección múltiple)
-PACKAGES="font git nvim go claude opencode gentleai gentleshell agents zed orca herdr monitorcontrol"
+PACKAGES="font git nvim go rust claude opencode gentleai gentleshell agents zed orca herdr monitorcontrol"
 
 usage() {
   cat <<EOF

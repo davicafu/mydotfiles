@@ -7,5 +7,4 @@ brew "fd"
 brew "prettier"
 brew "shfmt"
 
-# kdlfmt no está en Homebrew: se instala con cargo
-brew "rust"
+# kdlfmt no está en Homebrew: se instala con cargo (rustup, módulo rust)

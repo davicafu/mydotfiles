@@ -133,7 +133,9 @@ nvim_install_repo() {
   if nvim_kdlfmt_ok; then
     log_skip "kdlfmt ya instalado"
   else
-    run cargo install kdlfmt
+    # Sin cargo se instala Rust con rustup (módulo rust), no con brew
+    if ! has cargo && [[ ! -x "$HOME/.cargo/bin/cargo" ]]; then rust_install; fi
+    run "$(rust_cargo)" install kdlfmt
     log_ok "kdlfmt instalado"
   fi
   case ":$PATH:" in
