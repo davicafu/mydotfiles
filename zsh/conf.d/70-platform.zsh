@@ -1,8 +1,4 @@
-# WSL / Linux
-if grep -qi microsoft /proc/version 2>/dev/null; then
-  export PATH="$HOME/.local/bin:$PATH"
-fi
-
+# Linux / WSL (~/.local/bin va en 10-brew.zsh, para todas las plataformas)
 if [[ "$OSTYPE" == linux* ]]; then
   bindkey "^[[H" beginning-of-line
   bindkey "^[[F" end-of-line

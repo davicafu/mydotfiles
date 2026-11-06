@@ -62,7 +62,7 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo`, copia de `opencode/`, o `limpia`); con `repo` también engram (memoria de los agentes) |
 | `gentleai` | todas | sí | binario de [gentle-ai](https://github.com/Gentleman-Programming/gentle-ai), configurador de agentes de IA (tap `gentleman-programming/tap`). Solo se instala, no se ejecuta: `gentle-ai install` reescribe la config de cada agente (en opencode, la copia de `~/.config/opencode`, no el repo) |
 | `gentleshell` | todas | no | [Gentle Shell](https://github.com/Gentleman-Programming/gentle-shell), workspace de agentes de IA sobre pi con gentle-ai y Engram. Lo instala `gentle-ai shell install` (TUI propio, en `~/.gentle-shell`); con `-y` solo se muestra el comando. Instala gentle-ai si falta y lo conecta a las skills e instrucciones globales |
-| `agents` | todas | sí | AI Agents: skills personales de `agents/skills` e instrucciones globales de `agents/AGENTS.md` para Claude Code, opencode, pi y Gentle Shell: los que encuentre en la máquina, también los instalados fuera del repo (ver nota), y cómo instalar las skills de Matt Pocock |
+| `agents` | todas | sí | AI Agents: skills personales de `agents/skills` e instrucciones globales de `agents/AGENTS.md` para Claude Code, opencode, pi y Gentle Shell: los que encuentre en la máquina, también los instalados fuera del repo (ver nota), y cómo instalar los packs de skills de terceros (Matt Pocock; Go si está instalado) |
 | `zed` | mac, linux | no | editor Zed (mac: cask; linux: script oficial en `~/.local`) |
 | `orca` | mac | sí | Orca, orquestador de agentes de IA (cask `stablyai/orca/orca`) |
 | `herdr` | todas | linux, wsl | [herdr](https://herdr.dev), orquestador de agentes de IA como Orca pero en TUI y sin app móvil (fórmula `herdr`) |
@@ -121,7 +121,7 @@ En Linux/WSL hace falta antes: `sudo apt install -y build-essential git curl unz
 - aliases: `ls`/`ll`/`la`/`lt` con `eza`, `cat` con `bat`, `find` con `fd`, `grep` con `rg`
 - helpers con `fzf`: `cdf`, `ff`, `fg`, `fkill`, `glc`
 - arranque automatico de `zellij` con layout aleatorio (theme everfores, sakura y kanagawa). Se puede modificar en: `zsh/conf.d/60-functions.zsh` (función `zj`)
-- soporte WSL para `win32yank` via `~/.local/bin`
+- `~/.local/bin` en el `PATH` en todas las plataformas (`10-brew.zsh`): ahí instalan Claude Code, Gentle Shell, Zed (linux) y `win32yank` (WSL)
 
 ### Git
 
@@ -187,10 +187,17 @@ Skills personales de `agents/skills`:
 | `clickhouse-cloud-ops` | diagnóstico de problemas en producción de ClickHouse Cloud, en solo lectura. Los accesos de cada organización van en `references/access.md`, que no se incluye |
 | `daily` | resumen diario para el standup a partir del historial de Claude Code y git |
 
-`AGENTS.md` también usa las skills de [Matt Pocock](https://github.com/mattpocock/skills) (`tdd`, `diagnosing-bugs`, `codebase-design`, `pr`, `handoff`…), que no están en el repo. El instalador no las instala solo:
+Packs de skills de terceros, que no están en el repo (`AGENTS_PACKS` en `install/modules/agents.sh`):
 
-- **Claude Code:** `claude plugin install mattpocock-skills@claude-plugins-official` (se actualiza solo).
-- **opencode** (no tiene plugins): si opencode está instalado, el instalador ofrece `npx skills@latest add mattpocock/skills -g -a opencode` (necesita Node, desmarcado por defecto y nunca con `-y`). Se actualizan con `npx skills update`.
+| Pack | Cuándo | Para qué |
+|---|---|---|
+| [Matt Pocock](https://github.com/mattpocock/skills) | siempre | las que usa `AGENTS.md`: `tdd`, `diagnosing-bugs`, `codebase-design`, `pr`, `handoff`… |
+| [Go (samber)](https://github.com/samber/cc-skills-golang) | si Go está instalado | estilo, errores, testing, concurrencia, rendimiento, seguridad, librerías habituales… (licencia MIT) |
+
+El instalador no los instala solo:
+
+- **Claude Code:** muestra el comando del plugin (se actualiza solo): `claude plugin install mattpocock-skills@claude-plugins-official`, y para Go `claude plugin marketplace add samber/cc && claude plugin install cc-skills-golang@samber`.
+- **opencode, pi y Gentle Shell** (no tienen plugins): ofrece `npx skills@latest add <repo> --skill '*' -g -a <agentes> -y`, que deja las skills en `~/.agents/skills` (necesita Node, desmarcado por defecto y nunca con `-y`). Se actualizan con `npx skills update`.
 
 No instales las dos cosas para el mismo agente, porque saldría cada skill dos veces.
 

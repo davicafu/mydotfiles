@@ -6,3 +6,8 @@ elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
 fi
 
 BREW_PREFIX="$(brew --prefix)"
+
+# ~/.local/bin delante en todas las plataformas: ahí instalan Claude Code,
+# Gentle Shell, Zed (linux) y win32yank (WSL). Solo si no está ya.
+(( ${path[(Ie)$HOME/.local/bin]} )) || path=("$HOME/.local/bin" $path)
+export PATH

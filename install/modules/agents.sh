@@ -21,14 +21,19 @@
 # instaló este repo. Un AGENTS.md que ya existe no se toca. El AGENTS.md de
 # cada proyecto manda sobre estas instrucciones.
 #
-# Las skills de Matt Pocock no van en el repo: en Claude Code se instalan como
-# plugin (se actualiza solo) y en opencode, que no tiene plugins, con el CLI
-# de skills.sh, solo si se acepta.
+# Packs de skills de terceros (AGENTS_PACKS) no van en el repo. En Claude
+# Code se instalan como plugin (se actualizan solos) y solo se muestra el
+# comando. Para el resto de agentes se instalan con el CLI de skills.sh en
+# ~/.agents/skills, que leen opencode, pi y Gentle Shell, solo si se acepta.
+# Un pack con requisito (p. ej. go) solo se ofrece si está instalado.
 
 AGENTS_MD="$DOTFILES/agents/AGENTS.md"
 CLAUDE_MD="$HOME/.claude/CLAUDE.md"
 CLAUDE_IMPORT="@$AGENTS_MD"
-MATTPOCOCK_PLUGIN="mattpocock-skills@claude-plugins-official"
+# id|nombre|plugin de Claude Code|marketplace (vacío si es el oficial)|repo
+# para skills.sh|skill que indica que ya está|comando requerido (opcional)
+AGENTS_PACKS='mattpocock|Matt Pocock|mattpocock-skills@claude-plugins-official||mattpocock/skills|codebase-design|
+golang|Go (samber)|cc-skills-golang@samber|samber/cc|samber/cc-skills-golang|golang-testing|go'
 AGENTS_ALL="claude opencode pi gentleshell"
 
 agents_desc() { echo "AI Agents skills e instrucciones para todos los agentes"; }
@@ -107,7 +112,7 @@ agents_claude_status() {
 }
 
 agents_claude_install() {
-  local s link plugins="$HOME/.claude/plugins/installed_plugins.json"
+  local s link
   for s in $(agents_skills); do
     link="$HOME/.claude/skills/$s"
     if [[ -f "$link/SKILL.md" ]]; then
@@ -131,11 +136,7 @@ agents_claude_install() {
   done
   run mkdir -p "$(dirname "$CLAUDE_MD")"
   ensure_line "$CLAUDE_MD" "$CLAUDE_IMPORT"
-  if [[ -f "$plugins" ]] && grep -F "\"$MATTPOCOCK_PLUGIN\"" "$plugins" >/dev/null; then
-    log_skip "Skills de Matt Pocock ya instaladas en Claude Code"
-  else
-    log_info "Skills de Matt Pocock en Claude Code: claude plugin install $MATTPOCOCK_PLUGIN"
-  fi
+  agents_packs_claude
 }
 
 # ── opencode ─────────────────────────────────────────────────────────────────
@@ -157,18 +158,10 @@ agents_opencode_status() {
 }
 
 agents_opencode_install() {
-  local md cmd="npx skills@latest add mattpocock/skills -g -a opencode"
+  local md
   md="$(agents_opencode_md)"
   if [[ -n "$md" ]]; then agents_link_md "$md"; fi
-  if [[ -f "$HOME/.agents/skills/codebase-design/SKILL.md" ]]; then
-    log_skip "Skills de Matt Pocock ya instaladas para opencode"
-  elif [[ "$ASSUME_YES" == 1 || "$DRY_RUN" == 1 ]] || ! has npx; then
-    log_info "Skills de Matt Pocock en opencode (opcional, necesita Node): $cmd"
-  elif gum confirm --default=false "¿Instalar las skills de Matt Pocock para opencode? (se actualizan a mano con npx skills update)"; then
-    run npx skills@latest add mattpocock/skills -g -a opencode
-  else
-    log_info "Para instalarlas más adelante: $cmd"
-  fi
+  agents_packs_others
 }
 
 # ── pi y Gentle Shell ────────────────────────────────────────────────────────
@@ -178,6 +171,59 @@ agents_pi_md() {
     pi) echo "$HOME/.pi/agent/AGENTS.md" ;;
     gentleshell) echo "$HOME/.gentle-shell/agent/AGENTS.md" ;;
   esac
+}
+
+# ── Packs de terceros ────────────────────────────────────────────────────────
+
+agents_packs() {
+  local id name plugin market repo marker req
+  while IFS='|' read -r id name plugin market repo marker req; do
+    if [[ -n "$req" ]] && ! has "$req" && ! brew_satisfied "$req"; then continue; fi
+    echo "$id|$name|$plugin|$market|$repo|$marker"
+  done <<<"$AGENTS_PACKS"
+}
+
+# Claude Code: plugins, solo se muestra el comando
+agents_packs_claude() {
+  local id name plugin market repo marker cmd
+  local plugins="$HOME/.claude/plugins/installed_plugins.json"
+  while IFS='|' read -r id name plugin market repo marker; do
+    if [[ -f "$plugins" ]] && grep -F "\"$plugin\"" "$plugins" >/dev/null; then
+      log_skip "Skills de $name ya instaladas en Claude Code"
+      continue
+    fi
+    cmd="claude plugin install $plugin"
+    [[ -n "$market" ]] && cmd="claude plugin marketplace add $market && $cmd"
+    log_info "Skills de $name en Claude Code: $cmd"
+  done < <(agents_packs)
+}
+
+# Resto de agentes: skills.sh en ~/.agents/skills. Se pregunta una vez por
+# ejecución aunque haya varios agentes.
+agents_packs_others() {
+  local id name plugin market repo marker cmd
+  [[ -z "${AGENTS_PACKS_DONE:-}" ]] || return 0
+  AGENTS_PACKS_DONE=1
+  while IFS='|' read -r id name plugin market repo marker; do
+    cmd="npx skills@latest add $repo --skill '*' -g -a $(agents_packs_targets) -y"
+    if [[ -f "$HOME/.agents/skills/$marker/SKILL.md" ]]; then
+      log_skip "Skills de $name ya instaladas en ~/.agents/skills"
+    elif [[ "$ASSUME_YES" == 1 || "$DRY_RUN" == 1 ]] || ! has npx; then
+      log_info "Skills de $name para opencode · pi · Gentle Shell (opcional, necesita Node): $cmd"
+    elif gum confirm --default=false "¿Instalar las skills de $name en ~/.agents/skills? (se actualizan con npx skills update)" </dev/tty; then
+      run npx skills@latest add "$repo" --skill '*' -g -a $(agents_packs_targets) -y </dev/null
+    else
+      log_info "Para instalarlas más adelante: $cmd"
+    fi
+  done < <(agents_packs)
+}
+
+# Agentes para skills.sh: todos dejan la copia en ~/.agents/skills
+agents_packs_targets() {
+  local t=""
+  agents_present opencode && t="opencode"
+  if agents_present pi || agents_present gentleshell; then t="${t:+$t }pi"; fi
+  echo "${t:-pi}"
 }
 
 # ── Por agente ───────────────────────────────────────────────────────────────
@@ -195,7 +241,10 @@ agents_own_install() {
   case "$1" in
     claude) agents_claude_install ;;
     opencode) agents_opencode_install ;;
-    pi | gentleshell) agents_link_md "$(agents_pi_md "$1")" ;;
+    pi | gentleshell)
+      agents_link_md "$(agents_pi_md "$1")"
+      agents_packs_others
+      ;;
   esac
 }
 

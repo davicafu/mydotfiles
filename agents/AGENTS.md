@@ -11,7 +11,7 @@ Loaded in every project. A project's own CLAUDE.md/AGENTS.md wins where they dis
 
 ## Route by task
 
-Before acting, match the task to a skill and load it; its steps replace your default approach. A skill that is not installed is skipped: follow the protocol below instead. Matt Pocock's skills may carry a `mattpocock-skills:` prefix (Claude Code plugin). A project skill covering the same ground runs alongside these, and its conventions win.
+Before acting, match the task to a skill and load it; its steps replace your default approach. A skill that is not installed is skipped: follow the protocol below instead. Skills from Claude Code plugins may carry the plugin's prefix (`mattpocock-skills:`, `cc-skills-golang:`). A project skill covering the same ground runs alongside these, and its conventions win.
 
 | Task | Skill |
 |---|---|
@@ -20,6 +20,7 @@ Before acting, match the task to a skill and load it; its steps replace your def
 | Standup summary of a day's work | `daily` |
 | Bug, failing test, unexpected behaviour, regression | `diagnosing-bugs` |
 | Writing or changing code with tests | `tdd` |
+| Go code (style, errors, concurrency, testing, performance) | the matching `golang-*` skill (samber pack) |
 | Module boundaries, interfaces, seams, testability | `codebase-design` |
 | Domain terms, glossary, ADRs | `domain-modeling` |
 | Stress-testing a plan or idea | `grilling` |
@@ -29,6 +30,8 @@ Before acting, match the task to a skill and load it; its steps replace your def
 | Writing a PR body | `pr` |
 | Context running out, or another agent continues | `handoff` |
 | Writing a skill, CLAUDE.md or AGENTS.md | `writing-for-agents` |
+
+A project's instructions go in its AGENTS.md; its CLAUDE.md is a single `@AGENTS.md` line, so every agent reads the same file.
 
 ## Protocol
 
