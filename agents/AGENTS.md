@@ -19,11 +19,12 @@ Before acting, match the task to a skill and load it; its steps replace your def
 | Live production problem on ClickHouse | `clickhouse-cloud-ops` |
 | Standup summary of a day's work | `daily` |
 | Bug, failing test, unexpected behaviour, regression | `diagnosing-bugs` |
+| Writing, fixing or refactoring code: smallest change that fully solves it | `ponytail` |
 | Writing or changing code with tests | `tdd` |
 | Go code (style, errors, concurrency, testing, performance) | the matching `golang-*` skill (samber pack) |
-| New UI or visual redesign | `frontend-design` |
+| New UI, visual redesign or polishing an interface | `impeccable` (or `frontend-design` if it is not installed) |
 | React or Next.js code | `vercel-react-best-practices`, `vercel-composition-patterns` for component APIs |
-| Reviewing UI, accessibility or UX | `web-design-guidelines` |
+| Reviewing UI, accessibility or UX | `impeccable` (audit, critique), then `web-design-guidelines` |
 | Tauri app (desktop or mobile) | `tauri-v2` |
 | Module boundaries, interfaces, seams, testability | `codebase-design` |
 | Domain terms, glossary, ADRs | `domain-modeling` |
@@ -34,6 +35,7 @@ Before acting, match the task to a skill and load it; its steps replace your def
 | Writing a PR body | `pr` |
 | Context running out, or another agent continues | `handoff` |
 | Writing a skill, CLAUDE.md or AGENTS.md | `writing-for-agents` |
+| A task no installed skill covers, or I ask for a skill | `find-skills`: suggest the skill and its install command; install only when I say so |
 
 A project's instructions go in its AGENTS.md; its CLAUDE.md is a single `@AGENTS.md` line, so every agent reads the same file.
 

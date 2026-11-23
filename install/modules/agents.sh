@@ -35,6 +35,9 @@ CLAUDE_IMPORT="@$AGENTS_MD"
 # (vacío si es el oficial)|repo para skills.sh|skills del repo (vacío: todas)|
 # skill que indica que ya está|comando requerido (opcional)
 AGENTS_PACKS='mattpocock|Matt Pocock|mattpocock-skills@claude-plugins-official||mattpocock/skills||codebase-design|
+findskills|find-skills (skills.sh)|||vercel-labs/skills|find-skills|find-skills|
+ponytail|Ponytail|ponytail@ponytail|DietrichGebert/ponytail|DietrichGebert/ponytail||ponytail|
+impeccable|Impeccable|impeccable@impeccable|pbakaus/impeccable|pbakaus/impeccable|impeccable|impeccable|
 frontend|diseño frontend (Anthropic)|frontend-design@claude-plugins-official||anthropics/skills|frontend-design|frontend-design|
 web|React y web (Vercel)|||vercel-labs/agent-skills|vercel-react-best-practices web-design-guidelines vercel-composition-patterns|vercel-react-best-practices|node
 golang|Go (samber)|cc-skills-golang@samber|samber/cc|samber/cc-skills-golang||golang-testing|go
