@@ -17,7 +17,7 @@ cd ~/mydotfiles
 3. **Intérprete:** zsh
 4. **Prompt:** powerlevel10k
 5. **Multiplexor:** tmux (por defecto), zellij, ambos o ninguno
-6. **Paquetes** (selección múltiple): font, git, nvim, claude, gentleai, agents y orca (mac) vienen marcados, y herdr en linux/wsl; go, rust, opencode, gentleshell, zed, monitorcontrol y herdr en mac no. orca solo aparece en mac
+6. **Paquetes** (selección múltiple): font, git, nvim, claude, gentleai, agents y herdr vienen marcados; go, rust, opencode, gentleshell, zed, orca y monitorcontrol no. orca solo aparece en mac
 7. **Herramientas CLI** (selección múltiple, con una descripción de cada una): las de siempre vienen marcadas y las opcionales no (ver tabla abajo)
 8. **Neovim** (si está marcado): `repo` (por defecto) o `limpia`
 9. **opencode** (si está marcado): `repo` (por defecto) o `limpia`
@@ -59,14 +59,14 @@ Se puede ejecutar tantas veces como quieras porque solo aplica lo que falta:
 | `rust` | todas | no | Rust con [rustup](https://rustup.rs) (script oficial, `~/.cargo/bin`, se actualiza con `rustup update`). rustup y no la fórmula de brew porque Tauri lo necesita para los targets de móvil; si también está la fórmula `rust`, avisa de que sobra |
 | `ghostty` | mac | sí | Ghostty, `~/.config/ghostty` |
 | `wezterm` | todas | linux, wsl | mac: cask + `~/.wezterm.lua`; linux: `~/.wezterm.lua`; wsl: copia al home de Windows y winget |
-| `claude` | todas | sí | [Claude Code](https://code.claude.com) con el script oficial (`~/.local/bin`, se actualiza solo). Si `claude` ya está (cask, npm…) no se toca. Lo conecta a las skills e instrucciones globales (ver `agents`) |
+| `claude` | todas | sí | [Claude Code](https://code.claude.com) con el script oficial (`~/.local/bin`, se actualiza solo). Si `claude` ya está (cask, npm…) no se toca. Lo conecta a las skills e instrucciones globales (ver `agents`) y a la barra de estado de `claude/statusline.sh` (modelo y effort, contexto, uso de 5 h, semanal y semanal de Fable): enlaza `~/.claude/statusline.sh` y pone `statusLine` en `~/.claude/settings.json` con jq (backup antes; pregunta si ya había otra) |
 | `opencode` | todas | no | opencode, `~/.config/opencode` (variante `repo`, copia de `opencode/`, o `limpia`); con `repo` también engram (memoria de los agentes) |
 | `gentleai` | todas | sí | binario de [gentle-ai](https://github.com/Gentleman-Programming/gentle-ai), configurador de agentes de IA (tap `gentleman-programming/tap`). Solo se instala, no se ejecuta: `gentle-ai install` reescribe la config de cada agente (en opencode, la copia de `~/.config/opencode`, no el repo) |
 | `gentleshell` | todas | no | [Gentle Shell](https://github.com/Gentleman-Programming/gentle-shell), workspace de agentes de IA sobre pi con gentle-ai y Engram. Lo instala `gentle-ai shell install` (TUI propio, en `~/.gentle-shell`); con `-y` solo se muestra el comando. Instala gentle-ai si falta y lo conecta a las skills e instrucciones globales |
 | `agents` | todas | sí | AI Agents: skills personales de `agents/skills` e instrucciones globales de `agents/AGENTS.md` para Claude Code, opencode, pi y Gentle Shell: los que encuentre en la máquina, también los instalados fuera del repo (ver nota), y cómo instalar los packs de skills de terceros (Matt Pocock, find-skills, Ponytail, Impeccable y diseño frontend siempre; React/web si hay Node, Go si hay Go y Tauri si hay Rust) |
 | `zed` | mac, linux | no | editor Zed (mac: cask; linux: script oficial en `~/.local`) |
-| `orca` | mac | sí | Orca, orquestador de agentes de IA (cask `stablyai/orca/orca`) |
-| `herdr` | todas | linux, wsl | [herdr](https://herdr.dev), orquestador de agentes de IA como Orca pero en TUI y sin app móvil (fórmula `herdr`) |
+| `orca` | mac | no | Orca, orquestador de agentes de IA con app de escritorio y móvil (cask `stablyai/orca/orca`). Opcional: herdr hace lo mismo gastando mucha menos memoria |
+| `herdr` | todas | sí | [herdr](https://herdr.dev), orquestador de agentes de IA en TUI (fórmula `herdr`). Sustituye a Orca: gasta ~100 MB frente a ~1,4 GB, pero no tiene app móvil |
 | `monitorcontrol` | mac | no | MonitorControl, brillo y volumen de monitores externos (cask `monitorcontrol`) |
 
 **Herramientas CLI** (`install/modules/tools.sh`):
